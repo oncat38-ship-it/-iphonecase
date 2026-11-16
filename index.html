@@ -3,208 +3,304 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>スマホケース互換性チェッカー</title>
+  <title>全世代対応 iPhoneケース互換性チェッカー＆マトリクス表</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* 横スクロール時の左端列固定用 */
+    .sticky-col {
+      position: sticky;
+      left: 0;
+      z-index: 10;
+    }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen p-4 md:p-8">
-  <div class="max-w-3xl mx-auto">
-    <header class="mb-8 text-center">
-      <h1 class="text-2xl md:text-3xl font-bold text-slate-900">📱 スマホケース互換性チェッカー</h1>
-      <p class="text-sm text-slate-500 mt-2">2つの機種を選んでケースが使い回せるか即時判定＆一覧表</p>
+<body class="bg-slate-50 text-slate-800 min-h-screen p-3 md:p-8">
+  <div class="max-w-5xl mx-auto">
+    <header class="mb-6 text-center">
+      <h1 class="text-2xl md:text-3xl font-bold text-slate-900">📱 iPhoneケース互換性チェッカー（全世代対応）</h1>
+      <p class="text-xs md:text-sm text-slate-500 mt-1">初代iPhone 〜 最新iPhone 18シリーズ（Pro / Pro Max / Duo）まで対応</p>
     </header>
 
     <!-- タブ切り替え -->
-    <div class="flex border-b border-slate-200 mb-6">
-      <button id="tab-checker" onclick="switchTab('checker')" class="flex-1 py-3 font-semibold text-blue-600 border-b-2 border-blue-600">
+    <div class="flex border-b border-slate-200 mb-6 bg-white rounded-t-xl shadow-sm">
+      <button id="tab-checker" onclick="switchTab('checker')" class="flex-1 py-3.5 font-semibold text-blue-600 border-b-2 border-blue-600 text-sm md:text-base">
         🔍 2機種で即時判定
       </button>
-      <button id="tab-table" onclick="switchTab('table')" class="flex-1 py-3 font-semibold text-slate-500 hover:text-slate-700">
-        📋 互換性一覧表
+      <button id="tab-matrix" onclick="switchTab('matrix')" class="flex-1 py-3.5 font-semibold text-slate-500 hover:text-slate-700 text-sm md:text-base">
+        📊 互換性マトリクス表
       </button>
     </div>
 
     <!-- 1. 2機種比較チェッカー画面 -->
-    <div id="view-checker" class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+    <div id="view-checker" class="bg-white p-5 md:p-8 rounded-xl shadow-sm border border-slate-200">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">機種 A（手持ちのケースなど）</label>
-          <select id="model-a" onchange="checkCompatibility()" class="w-full p-3 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none"></select>
+          <label class="block text-sm font-bold text-slate-700 mb-1.5">機種 A（手持ちのケースなど）</label>
+          <select id="model-a" onchange="checkCompatibility()" class="w-full p-3 border border-slate-300 rounded-lg bg-white text-base focus:ring-2 focus:ring-blue-500 outline-none"></select>
         </div>
         <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1">機種 B（使いたい本体など）</label>
-          <select id="model-b" onchange="checkCompatibility()" class="w-full p-3 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 outline-none"></select>
+          <label class="block text-sm font-bold text-slate-700 mb-1.5">機種 B（装着したい本体など）</label>
+          <select id="model-b" onchange="checkCompatibility()" class="w-full p-3 border border-slate-300 rounded-lg bg-white text-base focus:ring-2 focus:ring-blue-500 outline-none"></select>
         </div>
       </div>
 
       <!-- 判定結果表示エリア -->
-      <div id="result-box" class="mt-6 p-5 rounded-lg text-center transition-all">
-        <!-- JSで動的に描画 -->
-      </div>
+      <div id="result-box" class="mt-6 p-6 rounded-xl text-center transition-all"></div>
     </div>
 
-    <!-- 2. 互換性一覧表画面 -->
-    <div id="view-table" class="hidden bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-      <div class="mb-4">
-        <input type="text" id="search-input" onkeyup="renderTable()" placeholder="機種名で検索（例: iPhone 14, SE, Pixel...）" class="w-full p-3 border border-slate-300 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+    <!-- 2. 互換性マトリクス表画面 -->
+    <div id="view-matrix" class="hidden bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
+      <!-- 世代フィルタボタン -->
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div class="flex flex-wrap gap-1.5" id="era-filters">
+          <button onclick="setEra('latest')" data-era="latest" class="era-btn px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold bg-blue-600 text-white">最新（16〜18シリーズ）</button>
+          <button onclick="setEra('mid')" data-era="mid" class="era-btn px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">12〜15シリーズ</button>
+          <button onclick="setEra('x_se')" data-era="x_se" class="era-btn px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">X〜11 / SEシリーズ</button>
+          <button onclick="setEra('classic')" data-era="classic" class="era-btn px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">初代〜8 Plus</button>
+        </div>
+        <div class="text-xs text-slate-500 flex items-center gap-3">
+          <span><strong class="text-emerald-600 text-sm">◎</strong> 完全互換</span>
+          <span><strong class="text-amber-500 text-sm">△</strong> 条件付き互換</span>
+          <span><strong class="text-slate-300 text-sm">×</strong> 非互換</span>
+        </div>
       </div>
-      <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr class="border-b-2 border-slate-200 text-sm text-slate-600">
-              <th class="py-3 px-4">グループ / サイズ</th>
-              <th class="py-3 px-4">互換性のある機種一覧</th>
-              <th class="py-3 px-4">注意点・備考</th>
-            </tr>
-          </thead>
-          <tbody id="table-body" class="divide-y divide-slate-100 text-sm">
-            <!-- JSで動的に描画 -->
-          </tbody>
-        </table>
+
+      <!-- マトリクス表本体 -->
+      <div class="overflow-x-auto border border-slate-200 rounded-lg">
+        <table class="w-full text-center border-collapse text-xs md:text-sm" id="matrix-table"></table>
       </div>
+
+      <!-- 選択中の世代の互換グループ詳細メモ -->
+      <div id="era-notes" class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs md:text-sm"></div>
     </div>
   </div>
 
   <script>
-    // ▼ 互換性データ（ここを編集・追加するだけで全画面に反映されます）
-    const compatibilityGroups = [
-      {
-        id: "iphone-se-47",
-        name: "iPhone 4.7インチ共通グループ",
-        models: ["iPhone 7", "iPhone 8", "iPhone SE (第2世代)", "iPhone SE (第3世代)"],
-        note: "基本形状は完全一致。ただしiPhone 7と8以降ではAppleロゴの位置が少し異なります。"
-      },
-      {
-        id: "iphone-12-61",
-        name: "iPhone 12 / 12 Pro (6.1インチ)",
-        models: ["iPhone 12", "iPhone 12 Pro"],
-        note: "カメラ枠・ボタン位置ともに完全互換です。"
-      },
-      {
-        id: "iphone-13-14",
-        name: "iPhone 13 / 14 (6.1インチ)",
-        models: ["iPhone 13", "iPhone 14"],
-        note: "厚みが0.15mm異なりますが、大半のソフトケース・ハードケースで併用可能です（厳密な設計のケースは注意）。"
-      },
-      {
-        id: "iphone-14-15-16e",
-        name: "iPhone 16e (6.1インチ)",
-        models: ["iPhone 16e"],
-        note: "単眼カメラのため、iPhone 14/15などの複数レンズ用ケースはカメラ枠が余ります。"
-      },
-      {
-        id: "pixel-6a",
-        name: "Google Pixel 6a",
-        models: ["Google Pixel 6a"],
-        note: "Pixel 6 / 7とはサイズ・カメラバーの厚みが異なるため互換性はありません。"
-      },
-      {
-        id: "pixel-9-pro",
-        name: "Google Pixel 9 / 9 Pro",
-        models: ["Google Pixel 9", "Google Pixel 9 Pro"],
-        note: "本体寸法・カメラバー形状が共通のためケースの使い回しが可能です。"
-      }
+    // ▼ 全世代iPhoneマスターデータ（新しい順）
+    // group: 完全互換グループID / partialGroup: 条件付き(△)互換グループID
+    const iphoneModels = [
+      // --- 最新（16〜18シリーズ） ---
+      { id: "18pm", name: "iPhone 18 Pro Max", era: "latest", group: "g_18pm", partialGroup: "p_17_18pm", note: "外寸・ボタン配置は17 Pro Maxと同一。カメラ台座まわりが広く開いたケースなら17 Pro Max用も流用可能（厳密設計のケースは干渉注意）。" },
+      { id: "18p", name: "iPhone 18 Pro", era: "latest", group: "g_18p", partialGroup: "p_17_18p", note: "外寸・ボタン配置は17 Proと同一。カメラ開口部が大きいケースなら17 Pro用も流用可能。" },
+      { id: "duo", name: "iPhone Duo (折りたたみ)", era: "latest", group: "g_duo", note: "ブック型折りたたみ専用設計のため、他機種との互換性はありません。" },
+      { id: "17e", name: "iPhone 17e", era: "latest", group: "g_16e_17e", partialGroup: "p_13_14_e", note: "iPhone 16eと本体サイズ・単眼カメラ位置が完全一致しており、ケースをそのまま使い回せます。" },
+      { id: "17pm", name: "iPhone 17 Pro Max", era: "latest", group: "g_17pm", partialGroup: "p_17_18pm", note: "横長カメラバー採用により16 Pro Max以前とは非互換。18 Pro Maxとは外寸共通（カメラ枠形状に注意）。" },
+      { id: "17p", name: "iPhone 17 Pro", era: "latest", group: "g_17p", partialGroup: "p_17_18p", note: "6.3インチ＋横長カメラバー採用。18 Proとは外寸が共通のため、カメラ枠に余裕があるケースは併用可能。" },
+      { id: "17air", name: "iPhone Air", era: "latest", group: "g_17air", note: "厚さ5.64mmの超薄型・6.5インチ専用ボディのため他機種との互換性はありません。" },
+      { id: "17", name: "iPhone 17", era: "latest", group: "g_17", note: "6.3インチ化によりiPhone 16（6.1インチ）以前のケースは装着不可。" },
+      { id: "16e", name: "iPhone 16e", era: "latest", group: "g_16e_17e", partialGroup: "p_13_14_e", note: "iPhone 17eと完全互換。また外寸がiPhone 13/14とほぼ同じため、単眼カメラでも構わなければ13/14用ケースが物理的に装着可能。" },
+      { id: "16pm", name: "iPhone 16 Pro Max", era: "latest", group: "g_16pm", note: "6.9インチ化＆カメラコントロールボタン追加により専用設計。" },
+      { id: "16p", name: "iPhone 16 Pro", era: "latest", group: "g_16p", note: "6.3インチ化＆カメラコントロールボタン追加により専用設計。" },
+      { id: "16plus", name: "iPhone 16 Plus", era: "latest", group: "g_16plus", note: "縦並び2眼カメラ＆カメラコントロールボタン追加により15 Plusとは非互換。" },
+      { id: "16", name: "iPhone 16", era: "latest", group: "g_16", note: "縦並び2眼カメラ＆カメラコントロールボタン追加により15以前とは非互換。" },
+
+      // --- 12〜15シリーズ ---
+      { id: "15pm", name: "iPhone 15 Pro Max", era: "mid", group: "g_15pm", note: "アクションボタン搭載＆エッジの丸み変更により14 Pro Maxとは非互換。" },
+      { id: "15p", name: "iPhone 15 Pro", era: "mid", group: "g_15p", note: "アクションボタン搭載＆わずかな小型化により14 Proとは非互換。" },
+      { id: "15plus", name: "iPhone 15 Plus", era: "mid", group: "g_15plus", note: "エッジが丸みを帯びた形状に変更されたため14 Plusとは非互換。" },
+      { id: "15", name: "iPhone 15", era: "mid", group: "g_15", note: "USB-C化＆エッジ形状変更により14/13とは非互換。" },
+      { id: "14pm", name: "iPhone 14 Pro Max", era: "mid", group: "g_14pm", note: "カメラユニット大型化により13 Pro Maxとは非互換。" },
+      { id: "14p", name: "iPhone 14 Pro", era: "mid", group: "g_14p", note: "カメラユニット大型化により13 Proとは非互換。" },
+      { id: "14plus", name: "iPhone 14 Plus", era: "mid", group: "g_14plus", note: "6.7インチ標準モデル初代。他機種との互換性なし。" },
+      { id: "14", name: "iPhone 14", era: "mid", group: "g_14", partialGroup: "p_13_14_e", note: "iPhone 13と縦横幅が同一（厚みのみ+0.15mm差）。ソフトケース等の多くが13と併用可能（精密ハードケースは注意）。" },
+      { id: "13pm", name: "iPhone 13 Pro Max", era: "mid", group: "g_13pm", note: "カメラ大型化により12 Pro Maxとは非互換。" },
+      { id: "13p", name: "iPhone 13 Pro", era: "mid", group: "g_13p", note: "カメラ大型化により12 Proとは非互換。" },
+      { id: "13", name: "iPhone 13", era: "mid", group: "g_13", partialGroup: "p_13_14_e", note: "iPhone 14と縦横幅が同一。柔軟性のあるケースなら14と使い回し可能。" },
+      { id: "13mini", name: "iPhone 13 mini", era: "mid", group: "g_13mini", note: "カメラ配置と厚みが12 miniと異なるため非互換。" },
+      { id: "12pm", name: "iPhone 12 Pro Max", era: "mid", group: "g_12pm", note: "専用設計。他機種との互換性なし。" },
+      { id: "12p", name: "iPhone 12 Pro", era: "mid", group: "g_12_12p", note: "iPhone 12と外寸・カメラ枠・ボタン位置すべて完全互換。" },
+      { id: "12", name: "iPhone 12", era: "mid", group: "g_12_12p", note: "iPhone 12 Proと完全互換。" },
+      { id: "12mini", name: "iPhone 12 mini", era: "mid", group: "g_12mini", note: "13 miniとはカメラ枠サイズが異なるため非互換。" },
+
+      // --- X〜11 / SEシリーズ ---
+      { id: "se3", name: "iPhone SE (第3世代)", era: "x_se", group: "g_47inch", note: "SE(第2世代)・iPhone 8・iPhone 7と完全互換。" },
+      { id: "se2", name: "iPhone SE (第2世代)", era: "x_se", group: "g_47inch", note: "SE(第3世代)・iPhone 8・iPhone 7と完全互換。" },
+      { id: "11pm", name: "iPhone 11 Pro Max", era: "x_se", group: "g_11pm", note: "XS Maxとはカメラ枠形状が異なるため非互換。" },
+      { id: "11p", name: "iPhone 11 Pro", era: "x_se", group: "g_11p", note: "X / XSとはカメラ枠形状が異なるため非互換。" },
+      { id: "11", name: "iPhone 11", era: "x_se", group: "g_11", partialGroup: "p_xr_11", note: "XRと外寸・ボタン位置が同一。カメラ穴が大きいため、11用ケースをXRに流用することは可能（逆は不可）。" },
+      { id: "xr", name: "iPhone XR", era: "x_se", group: "g_xr", partialGroup: "p_xr_11", note: "11と外寸同一。iPhone 11用のケースであればXRにも装着可能（XR用ケースはカメラ穴が小さく11には非対応）。" },
+      { id: "xsmax", name: "iPhone XS Max", era: "x_se", group: "g_xsmax", note: "専用設計。他機種との互換性なし。" },
+      { id: "xs", name: "iPhone XS", era: "x_se", group: "g_x_xs", note: "iPhone Xとほぼ完全互換（カメラ突起のわずかな差により一部精密ケースのみ注意）。" },
+      { id: "x", name: "iPhone X", era: "x_se", group: "g_x_xs", note: "iPhone XSと互換性あり。" },
+      { id: "se1", name: "iPhone SE (第1世代)", era: "x_se", group: "g_4inch", note: "iPhone 5 / 5sと完全互換。" },
+
+      // --- 初代〜8 Plus ---
+      { id: "8plus", name: "iPhone 8 Plus", era: "classic", group: "g_55inch", note: "iPhone 7 Plusと完全互換（6 Plus / 6s Plusとはカメラ位置が異なる）。" },
+      { id: "8", name: "iPhone 8", era: "classic", group: "g_47inch", note: "iPhone 7・SE(第2/第3世代)と完全互換。" },
+      { id: "7plus", name: "iPhone 7 Plus", era: "classic", group: "g_55inch", note: "iPhone 8 Plusと完全互換。" },
+      { id: "7", name: "iPhone 7", era: "classic", group: "g_47inch", note: "iPhone 8・SE(第2/第3世代)と完全互換。" },
+      { id: "6splus", name: "iPhone 6s Plus", era: "classic", group: "g_6plus_s", note: "iPhone 6 Plusと完全互換。" },
+      { id: "6plus", name: "iPhone 6 Plus", era: "classic", group: "g_6plus_s", note: "iPhone 6s Plusと完全互換。" },
+      { id: "6s", name: "iPhone 6s", era: "classic", group: "g_6_6s", note: "iPhone 6と完全互換（イヤホンジャック有無も共通）。" },
+      { id: "6", name: "iPhone 6", era: "classic", group: "g_6_6s", note: "iPhone 6sと完全互換。" },
+      { id: "5s", name: "iPhone 5s", era: "classic", group: "g_4inch", note: "iPhone 5・SE(第1世代)と完全互換。" },
+      { id: "5c", name: "iPhone 5c", era: "classic", group: "g_5c", note: "ポリカーボネート独自筐体のため専用設計。" },
+      { id: "5", name: "iPhone 5", era: "classic", group: "g_4inch", note: "iPhone 5s・SE(第1世代)と完全互換。" },
+      { id: "4s", name: "iPhone 4s", era: "classic", group: "g_4_4s", note: "iPhone 4とほぼ完全互換（マナーボタン位置が数ミリ異なるため一部ハードケースは注意）。" },
+      { id: "4", name: "iPhone 4", era: "classic", group: "g_4_4s", note: "iPhone 4sと互換性あり。" },
+      { id: "3gs", name: "iPhone 3GS", era: "classic", group: "g_3g_3gs", note: "iPhone 3Gと完全互換。" },
+      { id: "3g", name: "iPhone 3G", era: "classic", group: "g_3g_3gs", note: "iPhone 3GSと完全互換。" },
+      { id: "1st", name: "初代 iPhone (2G)", era: "classic", group: "g_1st", note: "専用設計。" }
     ];
 
-    // 初期化処理
+    let currentEra = 'latest';
+
+    // 2機種間の互換ステータスを返す関数
+    function getStatus(mA, mB) {
+      if (mA.id === mB.id) return 'same';
+      if (mA.group === mB.group) return 'full';
+      if (mA.partialGroup && mB.partialGroup && mA.partialGroup === mB.partialGroup) return 'partial';
+      return 'none';
+    }
+
+    // 初期化
     function init() {
       const selectA = document.getElementById('model-a');
       const selectB = document.getElementById('model-b');
-      
-      // 全機種リストを抽出
-      const allModels = [];
-      compatibilityGroups.forEach(group => {
-        group.models.forEach(model => {
-          allModels.push({ model, groupId: group.id });
-        });
+
+      iphoneModels.forEach(m => {
+        selectA.add(new Option(m.name, m.id));
+        selectB.add(new Option(m.name, m.id));
       });
 
-      allModels.forEach((item, index) => {
-        const optA = new Option(item.model, item.model);
-        const optB = new Option(item.model, item.model);
-        selectA.add(optA);
-        selectB.add(optB);
-      });
-
-      // 初期選択を別の機種にしておく
-      if (allModels.length > 1) {
-        selectB.selectedIndex = 1;
-      }
+      // デフォルト比較（18 Pro と 17 Pro）
+      selectA.value = '18p';
+      selectB.value = '17p';
 
       checkCompatibility();
-      renderTable();
+      renderMatrix();
     }
 
-    // 2機種の互換性判定
+    // 2機種即時判定
     function checkCompatibility() {
-      const modelA = document.getElementById('model-a').value;
-      const modelB = document.getElementById('model-b').value;
+      const idA = document.getElementById('model-a').value;
+      const idB = document.getElementById('model-b').value;
+      const mA = iphoneModels.find(m => m.id === idA);
+      const mB = iphoneModels.find(m => m.id === idB);
       const resultBox = document.getElementById('result-box');
+      const status = getStatus(mA, mB);
 
-      if (modelA === modelB) {
-        resultBox.className = "mt-6 p-5 rounded-lg text-center bg-slate-100 border border-slate-300";
-        resultBox.innerHTML = `<p class="text-lg font-bold text-slate-700">同じ機種が選択されています</p><p class="text-sm text-slate-500 mt-1">別の機種を選んで比較してください。</p>`;
-        return;
-      }
-
-      const groupA = compatibilityGroups.find(g => g.models.includes(modelA));
-      const groupB = compatibilityGroups.find(g => g.models.includes(modelB));
-
-      if (groupA && groupB && groupA.id === groupB.id) {
-        resultBox.className = "mt-6 p-5 rounded-lg text-center bg-emerald-50 border border-emerald-300";
+      if (status === 'same') {
+        resultBox.className = "mt-6 p-6 rounded-xl text-center bg-slate-100 border border-slate-300";
         resultBox.innerHTML = `
-          <div class="text-3xl mb-2">⭕ 互換性あり！</div>
-          <p class="font-bold text-emerald-900">「${modelA}」と「${modelB}」は同じケースが使えます</p>
-          <p class="text-sm text-emerald-700 mt-2 bg-white/70 p-2 rounded inline-block">💡 ${groupA.note}</p>
+          <p class="text-lg font-bold text-slate-700">同じ機種が選択されています</p>
+          <p class="text-sm text-slate-500 mt-1">別の機種を選んで比較してください。</p>
+        `;
+      } else if (status === 'full') {
+        resultBox.className = "mt-6 p-6 rounded-xl text-center bg-emerald-50 border-2 border-emerald-400";
+        resultBox.innerHTML = `
+          <div class="text-3xl md:text-4xl font-extrabold text-emerald-600 mb-2">◎ 完全互換あり！</div>
+          <p class="text-base md:text-lg font-bold text-emerald-950">「${mA.name}」と「${mB.name}」は同じケースが使えます</p>
+          <div class="mt-3 text-xs md:text-sm text-emerald-800 bg-white/80 p-3 rounded-lg inline-block max-w-xl text-left">
+            💡 <strong>ポイント：</strong>${mA.note}
+          </div>
+        `;
+      } else if (status === 'partial') {
+        resultBox.className = "mt-6 p-6 rounded-xl text-center bg-amber-50 border-2 border-amber-400";
+        resultBox.innerHTML = `
+          <div class="text-3xl md:text-4xl font-extrabold text-amber-600 mb-2">△ 条件付きで互換あり</div>
+          <p class="text-base md:text-lg font-bold text-amber-950">ケースの種類や向きによっては使い回せます</p>
+          <div class="mt-3 text-xs md:text-sm text-amber-900 bg-white/80 p-3 rounded-lg inline-block max-w-xl text-left space-y-1">
+            <p><strong>・${mA.name}：</strong>${mA.note}</p>
+            <p><strong>・${mB.name}：</strong>${mB.note}</p>
+          </div>
         `;
       } else {
-        resultBox.className = "mt-6 p-5 rounded-lg text-center bg-rose-50 border border-rose-300";
+        resultBox.className = "mt-6 p-6 rounded-xl text-center bg-rose-50 border border-rose-300";
         resultBox.innerHTML = `
-          <div class="text-3xl mb-2">❌ 互換性なし</div>
-          <p class="font-bold text-rose-900">「${modelA}」と「${modelB}」のケースは使い回せません</p>
-          <p class="text-sm text-rose-700 mt-1">カメラ位置・ボタン配置・本体サイズのいずれかが異なります。</p>
+          <div class="text-3xl md:text-4xl font-extrabold text-rose-600 mb-2">× 互換性なし</div>
+          <p class="text-base md:text-lg font-bold text-rose-950">「${mA.name}」と「${mB.name}」のケースは使い回せません</p>
+          <p class="text-xs md:text-sm text-rose-700 mt-2">本体サイズ・カメラユニットの大きさ・ボタン位置のいずれかが異なります。</p>
         `;
       }
     }
 
-    // 一覧表の描画・検索フィルタ
-    function renderTable() {
-      const query = document.getElementById('search-input').value.toLowerCase();
-      const tbody = document.getElementById('table-body');
-      tbody.innerHTML = '';
-
-      compatibilityGroups.forEach(group => {
-        const match = group.name.toLowerCase().includes(query) || 
-                      group.models.some(m => m.toLowerCase().includes(query)) ||
-                      group.note.toLowerCase().includes(query);
-        if (!match) return;
-
-        const tr = document.createElement('tr');
-        tr.className = "hover:bg-slate-50";
-        tr.innerHTML = `
-          <td class="py-3 px-4 font-semibold text-slate-800">${group.name}</td>
-          <td class="py-3 px-4">
-            <div class="flex flex-wrap gap-1">
-              ${group.models.map(m => `<span class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">${m}</span>`).join('')}
-            </div>
-          </td>
-          <td class="py-3 px-4 text-slate-600">${group.note}</td>
-        `;
-        tbody.appendChild(tr);
+    // 世代切り替え
+    function setEra(era) {
+      currentEra = era;
+      document.querySelectorAll('.era-btn').forEach(btn => {
+        const active = btn.dataset.era === era;
+        btn.className = active
+          ? "era-btn px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold bg-blue-600 text-white"
+          : "era-btn px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200";
       });
+      renderMatrix();
     }
 
-    // タブ切り替え処理
+    // マトリクス表描画
+    function renderMatrix() {
+      // 「X〜11 / SE」タブの時は、比較しやすいようiPhone 7 / 8も含める
+      const list = iphoneModels.filter(m => {
+        if (currentEra === 'x_se') return m.era === 'x_se' || m.id === '8' || m.id === '7';
+        return m.era === currentEra;
+      });
+
+      const table = document.getElementById('matrix-table');
+      let html = '<thead><tr class="bg-slate-100 border-b border-slate-300">';
+      html += '<th class="p-2.5 text-left font-bold text-slate-700 sticky-col bg-slate-100 min-w-[135px] border-r border-slate-200">機種名</th>';
+      list.forEach(col => {
+        html += `<th class="p-2 font-semibold text-slate-700 min-w-[76px] border-r border-slate-200 leading-tight">${col.name.replace('iPhone ', '')}</th>`;
+      });
+      html += '</tr></thead><tbody class="divide-y divide-slate-200">';
+
+      list.forEach(row => {
+        html += `<tr class="hover:bg-blue-50/40">`;
+        html += `<td class="p-2.5 text-left font-bold text-slate-800 sticky-col bg-white border-r border-slate-200 whitespace-nowrap">${row.name}</td>`;
+        list.forEach(col => {
+          const st = getStatus(row, col);
+          if (st === 'same') {
+            html += `<td class="p-2 bg-slate-100 text-slate-400 border-r border-slate-200">-</td>`;
+          } else if (st === 'full') {
+            html += `<td onclick="jumpToCheck('${row.id}','${col.id}')" title="クリックして詳細判定" class="p-2 bg-emerald-50 text-emerald-600 font-extrabold text-base cursor-pointer hover:bg-emerald-100 border-r border-slate-200">◎</td>`;
+          } else if (st === 'partial') {
+            html += `<td onclick="jumpToCheck('${row.id}','${col.id}')" title="クリックして条件を確認" class="p-2 bg-amber-50 text-amber-500 font-extrabold text-base cursor-pointer hover:bg-amber-100 border-r border-slate-200">△</td>`;
+          } else {
+            html += `<td class="p-2 text-slate-300 border-r border-slate-200">×</td>`;
+          }
+        });
+        html += `</tr>`;
+      });
+      html += '</tbody>';
+      table.innerHTML = html;
+
+      // 画面下部に互換性がある組み合わせの解説カードを自動生成
+      const notesContainer = document.getElementById('era-notes');
+      const notedModels = list.filter(m =>
+        list.some(other => other.id !== m.id && getStatus(m, other) !== 'none')
+      );
+
+      if (notedModels.length === 0) {
+        notesContainer.innerHTML = `<p class="text-slate-500 col-span-2">この世代内で互換性のある組み合わせはありません。</p>`;
+      } else {
+        notesContainer.innerHTML = notedModels.map(m => `
+          <div class="p-3 rounded-lg bg-slate-50 border border-slate-200">
+            <span class="font-bold text-slate-800">${m.name}：</span>
+            <span class="text-slate-600">${m.note}</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    // マトリクス表の「◎」「△」をクリックした時に即時判定タブへ飛んで詳細表示する
+    function jumpToCheck(idA, idB) {
+      document.getElementById('model-a').value = idA;
+      document.getElementById('model-b').value = idB;
+      checkCompatibility();
+      switchTab('checker');
+    }
+
+    // タブ切り替え
     function switchTab(tab) {
       const isChecker = tab === 'checker';
       document.getElementById('view-checker').classList.toggle('hidden', !isChecker);
-      document.getElementById('view-table').classList.toggle('hidden', isChecker);
-      
-      document.getElementById('tab-checker').className = isChecker 
-        ? "flex-1 py-3 font-semibold text-blue-600 border-b-2 border-blue-600" 
-        : "flex-1 py-3 font-semibold text-slate-500 hover:text-slate-700";
-      document.getElementById('tab-table').className = !isChecker 
-        ? "flex-1 py-3 font-semibold text-blue-600 border-b-2 border-blue-600" 
-        : "flex-1 py-3 font-semibold text-slate-500 hover:text-slate-700";
+      document.getElementById('view-matrix').classList.toggle('hidden', isChecker);
+
+      document.getElementById('tab-checker').className = isChecker
+        ? "flex-1 py-3.5 font-semibold text-blue-600 border-b-2 border-blue-600 text-sm md:text-base"
+        : "flex-1 py-3.5 font-semibold text-slate-500 hover:text-slate-700 text-sm md:text-base";
+      document.getElementById('tab-matrix').className = !isChecker
+        ? "flex-1 py-3.5 font-semibold text-blue-600 border-b-2 border-blue-600 text-sm md:text-base"
+        : "flex-1 py-3.5 font-semibold text-slate-500 hover:text-slate-700 text-sm md:text-base";
     }
 
     init();
