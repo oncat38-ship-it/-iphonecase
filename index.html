@@ -3,311 +3,346 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>iPhone 周辺機器・ケース互換性チェッカー＆逆引き表</title>
+  <title>iPhone 互換性チェッカー＆逆引き表</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    .sticky-col {
-      position: sticky;
-      left: 0;
-      z-index: 10;
-    }
-  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen p-3 md:p-8">
-  <div class="max-w-6xl mx-auto">
-    <header class="mb-6 text-center">
-      <h1 class="text-2xl md:text-3xl font-bold text-slate-900">📱 iPhone 互換性チェッカー＆逆引き表</h1>
-      <p class="text-xs md:text-sm text-slate-500 mt-1">数字・英字検索 / ケース・カメラ・フィルム・ケーブル別判定 / 発売年・インチ数検索</p>
+<body class="bg-slate-100 text-slate-800 min-h-screen p-2 md:p-5">
+  <div class="max-w-4xl mx-auto">
+    <!-- コンパクトヘッダー -->
+    <header class="flex flex-wrap items-center justify-between gap-2 mb-3 px-1">
+      <div>
+        <h1 class="text-lg md:text-xl font-bold text-slate-900">📱 iPhone 周辺機器・ケース互換チェッカー</h1>
+      </div>
+      <span class="text-[11px] text-slate-500 bg-white px-2.5 py-1 rounded-full border border-slate-200">
+        初代 〜 最新18シリーズ対応
+      </span>
     </header>
 
-    <!-- メインタブ切り替え -->
-    <div class="flex flex-wrap border-b border-slate-200 mb-6 bg-white rounded-t-xl shadow-sm">
-      <button id="tab-checker" onclick="switchTab('checker')" class="flex-1 min-w-[140px] py-3.5 font-semibold text-blue-600 border-b-2 border-blue-600 text-xs md:text-base">
-        🔍 2機種で項目別判定
+    <!-- メインタブ（コンパクト） -->
+    <div class="grid grid-cols-3 bg-white rounded-t-xl border border-b-0 border-slate-200 overflow-hidden text-xs md:text-sm font-bold">
+      <button id="tab-checker" onclick="switchTab('checker')" class="py-2.5 px-2 text-blue-600 border-b-2 border-blue-600 bg-blue-50/40">
+        🔍 2機種比較
       </button>
-      <button id="tab-matrix" onclick="switchTab('matrix')" class="flex-1 min-w-[140px] py-3.5 font-semibold text-slate-500 hover:text-slate-700 text-xs md:text-base">
-        📊 ケース互換マトリクス表
+      <button id="tab-single" onclick="switchTab('single')" class="py-2.5 px-2 text-slate-500 hover:text-slate-700 border-b border-slate-200">
+        📋 1機種から互換一覧
       </button>
-      <button id="tab-spec" onclick="switchTab('spec')" class="flex-1 min-w-[140px] py-3.5 font-semibold text-slate-500 hover:text-slate-700 text-xs md:text-base">
-        📅 発売年・インチ数 逆引き表
+      <button id="tab-spec" onclick="switchTab('spec')" class="py-2.5 px-2 text-slate-500 hover:text-slate-700 border-b border-slate-200">
+        📅 年・インチ逆引き
       </button>
     </div>
 
-    <!-- 1. 2機種比較チェッカー画面 -->
-    <div id="view-checker" class="bg-white p-4 md:p-8 rounded-xl shadow-sm border border-slate-200">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- ==========================================
+         1. 2機種で項目別判定タブ
+    =========================================== -->
+    <div id="view-checker" class="bg-white p-3.5 md:p-5 rounded-b-xl shadow-xs border border-slate-200">
+      <!-- 機種選択エリア（横並びコンパクト） -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
         <!-- 機種 A -->
-        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-          <label class="block text-sm font-bold text-slate-700 mb-2">機種 A（手持ちのケース・付属品など）</label>
-          <input type="text" id="search-a" oninput="filterModelList('a')" placeholder="数字・英字で検索（例: 18, pro, max, se, xr...）"
-                 class="w-full p-2.5 mb-2 border border-slate-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-          <select id="model-a" size="5" onchange="checkCompatibility()"
-                  class="w-full p-2 border border-slate-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-blue-500 outline-none"></select>
-          <div id="selected-label-a" class="mt-2 text-xs font-semibold text-blue-700"></div>
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-xs font-bold text-slate-700">機種 A（手持ちケース等）</label>
+            <span id="meta-a" class="text-[11px] text-blue-700 font-medium"></span>
+          </div>
+          <div class="flex gap-1.5">
+            <input type="text" id="search-a" oninput="filterSelect('a')" placeholder="英数字検索(18,pro,se...)"
+                   class="w-2/5 p-2 border border-slate-300 rounded-lg bg-white text-xs focus:ring-2 focus:ring-blue-500 outline-none">
+            <select id="model-a" onchange="checkCompatibility()"
+                    class="w-3/5 p-2 border border-slate-300 rounded-lg bg-white text-xs md:text-sm font-semibold focus:ring-2 focus:ring-blue-500 outline-none"></select>
+          </div>
         </div>
 
         <!-- 機種 B -->
-        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-          <label class="block text-sm font-bold text-slate-700 mb-2">機種 B（装着・使用するiPhone本体）</label>
-          <input type="text" id="search-b" oninput="filterModelList('b')" placeholder="数字・英字で検索（例: 17, air, 16e, 13, 8...）"
-                 class="w-full p-2.5 mb-2 border border-slate-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-          <select id="model-b" size="5" onchange="checkCompatibility()"
-                  class="w-full p-2 border border-slate-300 rounded-lg bg-white text-sm focus:ring-2 focus:ring-blue-500 outline-none"></select>
-          <div id="selected-label-b" class="mt-2 text-xs font-semibold text-blue-700"></div>
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-xs font-bold text-slate-700">機種 B（使用する本体）</label>
+            <span id="meta-b" class="text-[11px] text-blue-700 font-medium"></span>
+          </div>
+          <div class="flex gap-1.5">
+            <input type="text" id="search-b" oninput="filterSelect('b')" placeholder="英数字検索(17,air,13...)"
+                   class="w-2/5 p-2 border border-slate-300 rounded-lg bg-white text-xs focus:ring-2 focus:ring-blue-500 outline-none">
+            <select id="model-b" onchange="checkCompatibility()"
+                    class="w-3/5 p-2 border border-slate-300 rounded-lg bg-white text-xs md:text-sm font-semibold focus:ring-2 focus:ring-blue-500 outline-none"></select>
+          </div>
         </div>
       </div>
 
-      <!-- 判定結果表示エリア -->
-      <div id="result-box" class="mt-6"></div>
+      <!-- ファーストビュー結果エリア（4項目カード） -->
+      <div id="result-cards" class="mt-3.5"></div>
+
+      <!-- 詳細メモ（スクロール領域） -->
+      <div id="result-notes" class="mt-3.5 pt-3 border-t border-slate-100"></div>
     </div>
 
-    <!-- 2. 互換性マトリクス表画面 -->
-    <div id="view-matrix" class="hidden bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
-      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
-        <div class="flex flex-wrap gap-1.5" id="era-filters">
-          <button onclick="setEra('latest')" data-era="latest" class="era-btn px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold bg-blue-600 text-white">最新（16〜18シリーズ）</button>
-          <button onclick="setEra('mid')" data-era="mid" class="era-btn px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">12〜15シリーズ</button>
-          <button onclick="setEra('x_se')" data-era="x_se" class="era-btn px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">X〜11 / SEシリーズ</button>
-          <button onclick="setEra('classic')" data-era="classic" class="era-btn px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200">初代〜8 Plus</button>
-        </div>
-        <div class="text-xs text-slate-500 flex items-center gap-3">
-          <span><strong class="text-emerald-600 text-sm">◎</strong> 互換あり</span>
-          <span><strong class="text-amber-500 text-sm">△</strong> 条件付き</span>
-          <span><strong class="text-slate-300 text-sm">×</strong> 非互換</span>
-        </div>
-      </div>
+    <!-- ==========================================
+         2. 1機種から互換機種を一覧表示タブ
+    =========================================== -->
+    <div id="view-single" class="hidden bg-white p-3.5 md:p-5 rounded-b-xl shadow-xs border border-slate-200">
+      <!-- 基準機種選択＆フィルタバー -->
+      <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3.5">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-2.5 items-end">
+          <div class="md:col-span-7">
+            <div class="flex items-center justify-between mb-1">
+              <label class="text-xs font-bold text-slate-700">基準となる機種を選択</label>
+              <span id="meta-single" class="text-[11px] text-blue-700 font-medium"></span>
+            </div>
+            <div class="flex gap-1.5">
+              <input type="text" id="search-single" oninput="filterSelect('single')" placeholder="英数字で絞り込み..."
+                     class="w-2/5 p-2 border border-slate-300 rounded-lg bg-white text-xs focus:ring-2 focus:ring-blue-500 outline-none">
+              <select id="model-single" onchange="renderSingleCompat()"
+                      class="w-3/5 p-2 border border-slate-300 rounded-lg bg-white text-xs md:text-sm font-semibold focus:ring-2 focus:ring-blue-500 outline-none"></select>
+            </div>
+          </div>
 
-      <div class="overflow-x-auto border border-slate-200 rounded-lg">
-        <table class="w-full text-center border-collapse text-xs md:text-sm" id="matrix-table"></table>
-      </div>
-      <div id="era-notes" class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs md:text-sm"></div>
-    </div>
-
-    <!-- 3. 発売年・インチ数 逆引き＆一覧表画面 -->
-    <div id="view-spec" class="hidden bg-white p-4 md:p-6 rounded-xl shadow-sm border border-slate-200">
-      <div class="bg-blue-50/70 border border-blue-200 rounded-xl p-4 mb-5">
-        <p class="text-xs md:text-sm font-bold text-blue-950 mb-3">
-          パッケージに「発売年」や「インチ数」しか書かれていない周辺機器から機種を特定
-        </p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">発売年で絞り込み</label>
-            <select id="filter-year" onchange="renderSpecTable()" class="w-full p-2.5 border border-slate-300 rounded-lg bg-white text-sm">
-              <option value="all">すべての発売年</option>
+          <div class="md:col-span-5">
+            <label class="block text-xs font-bold text-slate-700 mb-1">表示条件フィルタ</label>
+            <select id="single-filter" onchange="renderSingleCompat()"
+                    class="w-full p-2 border border-slate-300 rounded-lg bg-white text-xs md:text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none">
+              <option value="any_case_cam_film">ケース・カメラ・フィルムのいずれかが合う機種</option>
+              <option value="case">🛡️ ケースが互換（◎/△）の機種のみ</option>
+              <option value="cam">📷 カメラカバーが互換（◎）の機種のみ</option>
+              <option value="film">🖼️ 保護フィルムが互換（◎）の機種のみ</option>
+              <option value="all">すべて表示（ケーブル互換含む）</option>
             </select>
           </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">画面インチ数で絞り込み</label>
-            <select id="filter-inch" onchange="renderSpecTable()" class="w-full p-2.5 border border-slate-300 rounded-lg bg-white text-sm">
-              <option value="all">すべてのインチ数</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-700 mb-1">キーワード・数字・英字</label>
-            <input type="text" id="filter-keyword" oninput="renderSpecTable()" placeholder="例: 6.1, 2025, pro, usb-c..."
-                   class="w-full p-2.5 border border-slate-300 rounded-lg bg-white text-sm">
-          </div>
         </div>
       </div>
 
-      <div class="overflow-x-auto border border-slate-200 rounded-lg">
+      <!-- 選択機種のポイント概要 -->
+      <div id="single-summary" class="mb-3"></div>
+
+      <!-- 互換機種リスト（縦スクロールで見やすく一覧化） -->
+      <div class="max-h-[55vh] overflow-y-auto border border-slate-200 rounded-lg">
         <table class="w-full text-left border-collapse text-xs md:text-sm">
-          <thead>
-            <tr class="bg-slate-100 border-b border-slate-300 text-slate-700">
-              <th class="py-3 px-3 font-bold">機種名</th>
-              <th class="py-3 px-3 font-bold">発売年</th>
-              <th class="py-3 px-3 font-bold">画面サイズ</th>
-              <th class="py-3 px-3 font-bold">端子・形状</th>
-              <th class="py-3 px-3 font-bold">ケース／互換のポイント</th>
-              <th class="py-3 px-3 font-bold text-center">判定</th>
+          <thead class="bg-slate-100 sticky top-0 z-10 border-b border-slate-300 text-slate-700">
+            <tr>
+              <th class="py-2 px-2.5 font-bold">互換候補の機種</th>
+              <th class="py-2 px-1.5 text-center font-bold">🛡️ケース</th>
+              <th class="py-2 px-1.5 text-center font-bold">📷カメラ</th>
+              <th class="py-2 px-1.5 text-center font-bold">🖼️フィルム</th>
+              <th class="py-2 px-1.5 text-center font-bold">🔌ケーブル</th>
+              <th class="py-2 px-2 text-right font-bold">詳細</th>
             </tr>
           </thead>
-          <tbody id="spec-table-body" class="divide-y divide-slate-200"></tbody>
+          <tbody id="single-tbody" class="divide-y divide-slate-200"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         3. 発売年・インチ数 逆引き表タブ
+    =========================================== -->
+    <div id="view-spec" class="hidden bg-white p-3.5 md:p-5 rounded-b-xl shadow-xs border border-slate-200">
+      <div class="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3.5">
+        <div>
+          <label class="block text-[11px] font-bold text-slate-600 mb-1">発売年</label>
+          <select id="filter-year" onchange="renderSpecTable()" class="w-full p-2 border border-slate-300 rounded-lg bg-white text-xs md:text-sm">
+            <option value="all">すべて</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-600 mb-1">インチ数</label>
+          <select id="filter-inch" onchange="renderSpecTable()" class="w-full p-2 border border-slate-300 rounded-lg bg-white text-xs md:text-sm">
+            <option value="all">すべて</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-slate-600 mb-1">キーワード</label>
+          <input type="text" id="filter-keyword" oninput="renderSpecTable()" placeholder="例: 6.1, pro..."
+                 class="w-full p-2 border border-slate-300 rounded-lg bg-white text-xs md:text-sm">
+        </div>
+      </div>
+
+      <div class="max-h-[60vh] overflow-y-auto border border-slate-200 rounded-lg">
+        <table class="w-full text-left border-collapse text-xs md:text-sm">
+          <thead class="bg-slate-100 sticky top-0 z-10 border-b border-slate-300 text-slate-700">
+            <tr>
+              <th class="py-2 px-2.5 font-bold">機種名</th>
+              <th class="py-2 px-2 font-bold">発売年</th>
+              <th class="py-2 px-2 font-bold">インチ</th>
+              <th class="py-2 px-2 font-bold">端子</th>
+              <th class="py-2 px-2 text-right font-bold">アクション</th>
+            </tr>
+          </thead>
+          <tbody id="spec-tbody" class="divide-y divide-slate-200"></tbody>
         </table>
       </div>
     </div>
   </div>
 
   <script>
-    // ▼ 全世代iPhoneデータ
-    // caseGroup: ケース完全互換 / casePartial: ケース条件付き互換
-    // camGroup: カメラカバー互換 / filmGroup: 保護フィルム互換 / cableGroup: 充電ケーブル互換
+    // ▼ 全世代iPhoneマスターデータ
     const iphoneModels = [
-      // --- 最新（16〜18シリーズ） ---
-      { id: "18pm", name: "iPhone 18 Pro Max", keywords: "18 pro max 18pm 6.9 2026", year: 2026, inch: 6.9, connector: "USB-C / MagSafe", era: "latest",
+      // --- 16〜18シリーズ ---
+      { id: "18pm", name: "iPhone 18 Pro Max", keywords: "18 pro max 18pm 6.9 2026", year: 2026, inch: 6.9, connector: "USB-C",
         caseGroup: "c_18pm", casePartial: "cp_17_18pm", camGroup: "cam_18pm", filmGroup: "f_16_18pm", cableGroup: "usbc",
-        note: "6.9インチ。外寸は17 Pro Maxと同一だが、カメラ台座まわりの開口部が広いケースのみ17 Pro Max用を流用可能。" },
-      { id: "18p", name: "iPhone 18 Pro", keywords: "18 pro 18p 6.3 2026", year: 2026, inch: 6.3, connector: "USB-C / MagSafe", era: "latest",
+        note: "外寸は17 Pro Maxと同一。カメラ台座まわりが広いケースのみ17 Pro Max用を流用可。画面フィルムは16/17 Pro Maxと共通。" },
+      { id: "18p", name: "iPhone 18 Pro", keywords: "18 pro 18p 6.3 2026", year: 2026, inch: 6.3, connector: "USB-C",
         caseGroup: "c_18p", casePartial: "cp_17_18p", camGroup: "cam_18p", filmGroup: "f_17_18p", cableGroup: "usbc",
-        note: "6.3インチ。外寸は17 Proと同一。カメラ開口部が大きめのケースなら17 Pro用が使える場合あり。" },
-      { id: "duo", name: "iPhone Duo (折りたたみ)", keywords: "duo fold foldable 折りたたみ 2026", year: 2026, inch: 7.8, connector: "USB-C / Qi2", era: "latest",
+        note: "外寸は17 Proと同一。カメラ開口部が大きめのケースなら17 Pro用を流用可。画面フィルムは17 / 17 Proと共通。" },
+      { id: "duo", name: "iPhone Duo (折りたたみ)", keywords: "duo fold foldable 折りたたみ 2026", year: 2026, inch: 7.8, connector: "USB-C",
         caseGroup: "c_duo", camGroup: "cam_duo", filmGroup: "f_duo", cableGroup: "usbc",
-        note: "折りたたみ専用筐体。ケース・カメラカバー・フィルムともに他機種と非互換。" },
-      { id: "17e", name: "iPhone 17e", keywords: "17e 6.1 2026", year: 2026, inch: 6.1, connector: "USB-C / MagSafe", era: "latest",
+        note: "ブック型折りたたみ専用筐体。ケース・カメラカバー・フィルムともに他機種と非互換。" },
+      { id: "17e", name: "iPhone 17e", keywords: "17e 6.1 2026", year: 2026, inch: 6.1, connector: "USB-C",
         caseGroup: "c_16e_17e", casePartial: "cp_13_14_e", camGroup: "cam_16e_17e", filmGroup: "f_13_14_16e_17e", cableGroup: "usbc",
-        note: "6.1インチ。iPhone 16eと完全互換。単眼カメラのため、外寸が近い13/14用ケースも一部流用可能。" },
-      { id: "17pm", name: "iPhone 17 Pro Max", keywords: "17 pro max 17pm 6.9 2025", year: 2025, inch: 6.9, connector: "USB-C / MagSafe", era: "latest",
+        note: "iPhone 16eとケース・カメラ・フィルム完全互換。単眼カメラのため外寸が近い13/14用ケースも一部流用可。" },
+      { id: "17pm", name: "iPhone 17 Pro Max", keywords: "17 pro max 17pm 6.9 2025", year: 2025, inch: 6.9, connector: "USB-C",
         caseGroup: "c_17pm", casePartial: "cp_17_18pm", camGroup: "cam_17pm", filmGroup: "f_16_18pm", cableGroup: "usbc",
-        note: "6.9インチ・横長カメラバー採用。画面フィルムは16 Pro Max / 18 Pro Maxと共通系統。" },
-      { id: "17p", name: "iPhone 17 Pro", keywords: "17 pro 17p 6.3 2025", year: 2025, inch: 6.3, connector: "USB-C / MagSafe", era: "latest",
+        note: "横長カメラバー採用により16 Pro Max以前とはケース非互換。18 Pro Maxとは外寸共通（カメラ枠注意）。" },
+      { id: "17p", name: "iPhone 17 Pro", keywords: "17 pro 17p 6.3 2025", year: 2025, inch: 6.3, connector: "USB-C",
         caseGroup: "c_17p", casePartial: "cp_17_18p", camGroup: "cam_17p", filmGroup: "f_17_18p", cableGroup: "usbc",
-        note: "6.3インチ・横長カメラバー採用。18 Proとは外寸共通のためケース条件付き互換。" },
-      { id: "17air", name: "iPhone Air", keywords: "17 air 6.5 2025 thin", year: 2025, inch: 6.5, connector: "USB-C / MagSafe", era: "latest",
+        note: "横長カメラバー採用。18 Proとは外寸共通のためカメラ開口部が広いケースは流用可。" },
+      { id: "17air", name: "iPhone Air", keywords: "17 air 6.5 2025", year: 2025, inch: 6.5, connector: "USB-C",
         caseGroup: "c_17air", camGroup: "cam_17air", filmGroup: "f_17air", cableGroup: "usbc",
-        note: "6.5インチ・超薄型ボディ専用設計。ケース・フィルムともに他機種と非互換。" },
-      { id: "17", name: "iPhone 17", keywords: "17 6.3 2025", year: 2025, inch: 6.3, connector: "USB-C / MagSafe", era: "latest",
+        note: "6.5インチ超薄型専用ボディ。ケース・フィルムともに他機種と非互換。" },
+      { id: "17", name: "iPhone 17", keywords: "17 6.3 2025", year: 2025, inch: 6.3, connector: "USB-C",
         caseGroup: "c_17", camGroup: "cam_17", filmGroup: "f_17_18p", cableGroup: "usbc",
-        note: "6.3インチ化により16（6.1インチ）以前のケース・フィルムは非互換。" },
-      { id: "16e", name: "iPhone 16e", keywords: "16e 6.1 2025", year: 2025, inch: 6.1, connector: "USB-C", era: "latest",
+        note: "6.3インチ化により16（6.1インチ）以前のケースは非互換。フィルムは17 Pro / 18 Proと共通。" },
+      { id: "16e", name: "iPhone 16e", keywords: "16e 6.1 2025", year: 2025, inch: 6.1, connector: "USB-C",
         caseGroup: "c_16e_17e", casePartial: "cp_13_14_e", camGroup: "cam_16e_17e", filmGroup: "f_13_14_16e_17e", cableGroup: "usbc",
-        note: "6.1インチ・単眼カメラ。17eと完全互換。画面形状は13/14と近いためフィルムも流用可（MagSafe非対応点に注意）。" },
-      { id: "16pm", name: "iPhone 16 Pro Max", keywords: "16 pro max 16pm 6.9 2024", year: 2024, inch: 6.9, connector: "USB-C / MagSafe", era: "latest",
+        note: "17eと完全互換。フィルムは13 / 13 Pro / 14 / 17eと共通。" },
+      { id: "16pm", name: "iPhone 16 Pro Max", keywords: "16 pro max 16pm 6.9 2024", year: 2024, inch: 6.9, connector: "USB-C",
         caseGroup: "c_16pm", camGroup: "cam_16pm", filmGroup: "f_16_18pm", cableGroup: "usbc",
-        note: "6.9インチ・カメラコントロールボタン搭載。17/18 Pro Maxとは画面フィルムの互換性あり。" },
-      { id: "16p", name: "iPhone 16 Pro", keywords: "16 pro 16p 6.3 2024", year: 2024, inch: 6.3, connector: "USB-C / MagSafe", era: "latest",
+        note: "6.9インチ・カメラコントロール搭載。フィルムは17 Pro Max / 18 Pro Maxと共通。" },
+      { id: "16p", name: "iPhone 16 Pro", keywords: "16 pro 16p 6.3 2024", year: 2024, inch: 6.3, connector: "USB-C",
         caseGroup: "c_16p", camGroup: "cam_16p", filmGroup: "f_16p", cableGroup: "usbc",
-        note: "6.3インチ・カメラコントロール搭載。ケースは専用設計。" },
-      { id: "16plus", name: "iPhone 16 Plus", keywords: "16 plus 6.7 2024", year: 2024, inch: 6.7, connector: "USB-C / MagSafe", era: "latest",
+        note: "6.3インチ・カメラコントロール搭載。専用設計。" },
+      { id: "16plus", name: "iPhone 16 Plus", keywords: "16 plus 6.7 2024", year: 2024, inch: 6.7, connector: "USB-C",
         caseGroup: "c_16plus", camGroup: "cam_16plus", filmGroup: "f_14p_15plus_16plus", cableGroup: "usbc",
-        note: "6.7インチ・縦並び2眼カメラ。画面フィルムは14 Pro / 15 Plusと同系統。" },
-      { id: "16", name: "iPhone 16", keywords: "16 6.1 2024", year: 2024, inch: 6.1, connector: "USB-C / MagSafe", era: "latest",
+        note: "縦並び2眼カメラ＆カメラコントロール搭載。フィルムは15 Plus / 14 Pro Maxと共通系統。" },
+      { id: "16", name: "iPhone 16", keywords: "16 6.1 2024", year: 2024, inch: 6.1, connector: "USB-C",
         caseGroup: "c_16", camGroup: "cam_16", filmGroup: "f_15_16", cableGroup: "usbc",
-        note: "6.1インチ・縦並び2眼＆カメラコントロール搭載。画面フィルムは15と共通。" },
+        note: "縦並び2眼カメラ＆カメラコントロール搭載。フィルムは15 / 15 Proと共通。" },
 
       // --- 12〜15シリーズ ---
-      { id: "15pm", name: "iPhone 15 Pro Max", keywords: "15 pro max 15pm 6.7 2023", year: 2023, inch: 6.7, connector: "USB-C / MagSafe", era: "mid",
+      { id: "15pm", name: "iPhone 15 Pro Max", keywords: "15 pro max 15pm 6.7 2023", year: 2023, inch: 6.7, connector: "USB-C",
         caseGroup: "c_15pm", camGroup: "cam_15pm", filmGroup: "f_15pm", cableGroup: "usbc",
-        note: "6.7インチ・アクションボタン搭載。14 Pro Maxとはカメラ位置・ボタン配置が異なるため非互換。" },
-      { id: "15p", name: "iPhone 15 Pro", keywords: "15 pro 15p 6.1 2023", year: 2023, inch: 6.1, connector: "USB-C / MagSafe", era: "mid",
+        note: "アクションボタン搭載＆エッジ形状変更により14 Pro Maxとはケース非互換。" },
+      { id: "15p", name: "iPhone 15 Pro", keywords: "15 pro 15p 6.1 2023", year: 2023, inch: 6.1, connector: "USB-C",
         caseGroup: "c_15p", camGroup: "cam_15p", filmGroup: "f_15_16", cableGroup: "usbc",
-        note: "6.1インチ・アクションボタン搭載。ケースは14 Proと非互換。" },
-      { id: "15plus", name: "iPhone 15 Plus", keywords: "15 plus 6.7 2023", year: 2023, inch: 6.7, connector: "USB-C / MagSafe", era: "mid",
+        note: "アクションボタン搭載により14 Proとはケース非互換。フィルムは15 / 16と共通。" },
+      { id: "15plus", name: "iPhone 15 Plus", keywords: "15 plus 6.7 2023", year: 2023, inch: 6.7, connector: "USB-C",
         caseGroup: "c_15plus", camGroup: "cam_15plus", filmGroup: "f_14p_15plus_16plus", cableGroup: "usbc",
-        note: "6.7インチ・エッジが丸みを帯びた形状。14 Plusとはケース非互換。" },
-      { id: "15", name: "iPhone 15", keywords: "15 6.1 2023", year: 2023, inch: 6.1, connector: "USB-C / MagSafe", era: "mid",
+        note: "エッジの丸み変更により14 Plusとはケース非互換。フィルムは16 Plusと共通。" },
+      { id: "15", name: "iPhone 15", keywords: "15 6.1 2023", year: 2023, inch: 6.1, connector: "USB-C",
         caseGroup: "c_15", camGroup: "cam_15", filmGroup: "f_15_16", cableGroup: "usbc",
-        note: "6.1インチ・USB-C＆Dynamic Island搭載。14/13とはケース非互換。" },
-      { id: "14pm", name: "iPhone 14 Pro Max", keywords: "14 pro max 14pm 6.7 2022", year: 2022, inch: 6.7, connector: "Lightning / MagSafe", era: "mid",
+        note: "USB-C＆Dynamic Island搭載。14/13とはケース非互換。フィルムは15 Pro / 16と共通。" },
+      { id: "14pm", name: "iPhone 14 Pro Max", keywords: "14 pro max 14pm 6.7 2022", year: 2022, inch: 6.7, connector: "Lightning",
         caseGroup: "c_14pm", camGroup: "cam_14pm", filmGroup: "f_14pm", cableGroup: "lightning",
-        note: "6.7インチ。カメラ大型化により13 Pro Maxとは非互換。" },
-      { id: "14p", name: "iPhone 14 Pro", keywords: "14 pro 14p 6.1 2022", year: 2022, inch: 6.1, connector: "Lightning / MagSafe", era: "mid",
-        caseGroup: "c_14p", camGroup: "cam_14p", filmGroup: "f_14p_15plus_16plus", cableGroup: "lightning",
-        note: "6.1インチ。カメラ大型化により13 Proとは非互換。" },
-      { id: "14plus", name: "iPhone 14 Plus", keywords: "14 plus 6.7 2022", year: 2022, inch: 6.7, connector: "Lightning / MagSafe", era: "mid",
+        note: "カメラ大型化により13 Pro Maxとは非互換。" },
+      { id: "14p", name: "iPhone 14 Pro", keywords: "14 pro 14p 6.1 2022", year: 2022, inch: 6.1, connector: "Lightning",
+        caseGroup: "c_14p", camGroup: "cam_14p", filmGroup: "f_14p_61", cableGroup: "lightning",
+        note: "Dynamic Island初搭載。13 Proとはケース・フィルムともに非互換。" },
+      { id: "14plus", name: "iPhone 14 Plus", keywords: "14 plus 6.7 2022", year: 2022, inch: 6.7, connector: "Lightning",
         caseGroup: "c_14plus", camGroup: "cam_14plus", filmGroup: "f_13pm_14plus", cableGroup: "lightning",
-        note: "6.7インチ。画面フィルムは13 Pro Maxと共通系統。" },
-      { id: "14", name: "iPhone 14", keywords: "14 6.1 2022", year: 2022, inch: 6.1, connector: "Lightning / MagSafe", era: "mid",
+        note: "フィルムは13 Pro Maxと共通。ケースは専用設計。" },
+      { id: "14", name: "iPhone 14", keywords: "14 6.1 2022", year: 2022, inch: 6.1, connector: "Lightning",
         caseGroup: "c_14", casePartial: "cp_13_14_e", camGroup: "cam_13_14", filmGroup: "f_13_14_16e_17e", cableGroup: "lightning",
-        note: "6.1インチ。13とケース・カメラカバー・フィルムの多くが併用可能。" },
-      { id: "13pm", name: "iPhone 13 Pro Max", keywords: "13 pro max 13pm 6.7 2021", year: 2021, inch: 6.7, connector: "Lightning / MagSafe", era: "mid",
+        note: "13と縦横幅が同一（厚み+0.15mm差）。ソフトケース等の多くが13と併用可。フィルム・カメラカバーも共通。" },
+      { id: "13pm", name: "iPhone 13 Pro Max", keywords: "13 pro max 13pm 6.7 2021", year: 2021, inch: 6.7, connector: "Lightning",
         caseGroup: "c_13pm", camGroup: "cam_13pm", filmGroup: "f_13pm_14plus", cableGroup: "lightning",
-        note: "6.7インチ。12 Pro Maxとはケース非互換。" },
-      { id: "13p", name: "iPhone 13 Pro", keywords: "13 pro 13p 6.1 2021", year: 2021, inch: 6.1, connector: "Lightning / MagSafe", era: "mid",
+        note: "フィルムは14 Plusと共通。12 Pro Maxとはケース非互換。" },
+      { id: "13p", name: "iPhone 13 Pro", keywords: "13 pro 13p 6.1 2021", year: 2021, inch: 6.1, connector: "Lightning",
         caseGroup: "c_13p", camGroup: "cam_13p", filmGroup: "f_13_14_16e_17e", cableGroup: "lightning",
-        note: "6.1インチ。12 Proとはカメラサイズが異なるため非互換。" },
-      { id: "13", name: "iPhone 13", keywords: "13 6.1 2021", year: 2021, inch: 6.1, connector: "Lightning / MagSafe", era: "mid",
+        note: "フィルムは13 / 14 / 16e / 17eと共通。ケースはカメラ枠が大きく13とは非互換。" },
+      { id: "13", name: "iPhone 13", keywords: "13 6.1 2021", year: 2021, inch: 6.1, connector: "Lightning",
         caseGroup: "c_13", casePartial: "cp_13_14_e", camGroup: "cam_13_14", filmGroup: "f_13_14_16e_17e", cableGroup: "lightning",
-        note: "6.1インチ。14とケース・フィルム・カメラカバーが共通系統。" },
-      { id: "13mini", name: "iPhone 13 mini", keywords: "13 mini 5.4 2021", year: 2021, inch: 5.4, connector: "Lightning / MagSafe", era: "mid",
+        note: "14と縦横幅同一のため柔軟性のあるケースは併用可。フィルム・カメラカバーも14と共通。" },
+      { id: "13mini", name: "iPhone 13 mini", keywords: "13 mini 5.4 2021", year: 2021, inch: 5.4, connector: "Lightning",
         caseGroup: "c_13mini", camGroup: "cam_13mini", filmGroup: "f_12mini_13mini", cableGroup: "lightning",
-        note: "5.4インチ。画面フィルムは12 miniと共通。ケースはカメラ対角配置のため非互換。" },
-      { id: "12pm", name: "iPhone 12 Pro Max", keywords: "12 pro max 12pm 6.7 2020", year: 2020, inch: 6.7, connector: "Lightning / MagSafe", era: "mid",
+        note: "フィルムは12 miniと共通。ケースはカメラ対角配置のため非互換。" },
+      { id: "12pm", name: "iPhone 12 Pro Max", keywords: "12 pro max 12pm 6.7 2020", year: 2020, inch: 6.7, connector: "Lightning",
         caseGroup: "c_12pm", camGroup: "cam_12pm", filmGroup: "f_12pm", cableGroup: "lightning",
         note: "6.7インチ専用設計。" },
-      { id: "12p", name: "iPhone 12 Pro", keywords: "12 pro 12p 6.1 2020", year: 2020, inch: 6.1, connector: "Lightning / MagSafe", era: "mid",
+      { id: "12p", name: "iPhone 12 Pro", keywords: "12 pro 12p 6.1 2020", year: 2020, inch: 6.1, connector: "Lightning",
         caseGroup: "c_12_12p", camGroup: "cam_12p", filmGroup: "f_12_12p", cableGroup: "lightning",
-        note: "6.1インチ。iPhone 12とケース・画面フィルムが完全互換。" },
-      { id: "12", name: "iPhone 12", keywords: "12 6.1 2020", year: 2020, inch: 6.1, connector: "Lightning / MagSafe", era: "mid",
+        note: "iPhone 12とケース・フィルム完全互換（カメラレンズ数のみ異なる）。" },
+      { id: "12", name: "iPhone 12", keywords: "12 6.1 2020", year: 2020, inch: 6.1, connector: "Lightning",
         caseGroup: "c_12_12p", camGroup: "cam_12", filmGroup: "f_12_12p", cableGroup: "lightning",
-        note: "6.1インチ。iPhone 12 Proとケース・画面フィルムが完全互換。" },
-      { id: "12mini", name: "iPhone 12 mini", keywords: "12 mini 5.4 2020", year: 2020, inch: 5.4, connector: "Lightning / MagSafe", era: "mid",
+        note: "iPhone 12 Proとケース・フィルム完全互換。" },
+      { id: "12mini", name: "iPhone 12 mini", keywords: "12 mini 5.4 2020", year: 2020, inch: 5.4, connector: "Lightning",
         caseGroup: "c_12mini", camGroup: "cam_12mini", filmGroup: "f_12mini_13mini", cableGroup: "lightning",
-        note: "5.4インチ。画面フィルムは13 miniと共通。" },
+        note: "フィルムは13 miniと共通。" },
 
-      // --- X〜11 / SEシリーズ ---
-      { id: "se3", name: "iPhone SE (第3世代)", keywords: "se3 se 3 2022 4.7", year: 2022, inch: 4.7, connector: "Lightning", era: "x_se",
+      // --- X〜11 / SE / Classic ---
+      { id: "se3", name: "iPhone SE (第3世代)", keywords: "se3 se 3 2022 4.7", year: 2022, inch: 4.7, connector: "Lightning",
         caseGroup: "c_47", camGroup: "cam_single_old", filmGroup: "f_47", cableGroup: "lightning",
-        note: "4.7インチ。SE(第2世代)・8・7と完全互換。" },
-      { id: "se2", name: "iPhone SE (第2世代)", keywords: "se2 se 2 2020 4.7", year: 2020, inch: 4.7, connector: "Lightning", era: "x_se",
+        note: "SE(第2世代)・8・7とケース・フィルム完全互換。" },
+      { id: "se2", name: "iPhone SE (第2世代)", keywords: "se2 se 2 2020 4.7", year: 2020, inch: 4.7, connector: "Lightning",
         caseGroup: "c_47", camGroup: "cam_single_old", filmGroup: "f_47", cableGroup: "lightning",
-        note: "4.7インチ。SE(第3世代)・8・7と完全互換。" },
-      { id: "11pm", name: "iPhone 11 Pro Max", keywords: "11 pro max 11pm 6.5 2019", year: 2019, inch: 6.5, connector: "Lightning", era: "x_se",
+        note: "SE(第3世代)・8・7とケース・フィルム完全互換。" },
+      { id: "11pm", name: "iPhone 11 Pro Max", keywords: "11 pro max 11pm 6.5 2019", year: 2019, inch: 6.5, connector: "Lightning",
         caseGroup: "c_11pm", camGroup: "cam_11pm", filmGroup: "f_xsmax_11pm", cableGroup: "lightning",
-        note: "6.5インチ。画面フィルムはXS Maxと共通系統。" },
-      { id: "11p", name: "iPhone 11 Pro", keywords: "11 pro 11p 5.8 2019", year: 2019, inch: 5.8, connector: "Lightning", era: "x_se",
+        note: "フィルムはXS Maxと共通。ケースはカメラ枠が異なるため非互換。" },
+      { id: "11p", name: "iPhone 11 Pro", keywords: "11 pro 11p 5.8 2019", year: 2019, inch: 5.8, connector: "Lightning",
         caseGroup: "c_11p", camGroup: "cam_11p", filmGroup: "f_x_xs_11p", cableGroup: "lightning",
-        note: "5.8インチ。画面フィルムはX / XSと共通系統。" },
-      { id: "11", name: "iPhone 11", keywords: "11 6.1 2019", year: 2019, inch: 6.1, connector: "Lightning", era: "x_se",
+        note: "フィルムはX / XSと共通。ケースはカメラ枠が異なるため非互換。" },
+      { id: "11", name: "iPhone 11", keywords: "11 6.1 2019", year: 2019, inch: 6.1, connector: "Lightning",
         caseGroup: "c_11", casePartial: "cp_xr_11", camGroup: "cam_11", filmGroup: "f_xr_11", cableGroup: "lightning",
-        note: "6.1インチ。XRと画面フィルム・一部ケースが共通。" },
-      { id: "xr", name: "iPhone XR", keywords: "xr 6.1 2018", year: 2018, inch: 6.1, connector: "Lightning", era: "x_se",
+        note: "XRと外寸同一。11用ケースをXRに装着することは可能（逆は不可）。フィルムは完全共通。" },
+      { id: "xr", name: "iPhone XR", keywords: "xr 6.1 2018", year: 2018, inch: 6.1, connector: "Lightning",
         caseGroup: "c_xr", casePartial: "cp_xr_11", camGroup: "cam_single_old", filmGroup: "f_xr_11", cableGroup: "lightning",
-        note: "6.1インチ。画面フィルムは11と共通。" },
-      { id: "xsmax", name: "iPhone XS Max", keywords: "xs max 6.5 2018", year: 2018, inch: 6.5, connector: "Lightning", era: "x_se",
+        note: "フィルムは11と完全共通。11用ケースの流用も可能。" },
+      { id: "xsmax", name: "iPhone XS Max", keywords: "xs max 6.5 2018", year: 2018, inch: 6.5, connector: "Lightning",
         caseGroup: "c_xsmax", camGroup: "cam_xsmax", filmGroup: "f_xsmax_11pm", cableGroup: "lightning",
-        note: "6.5インチ。画面フィルムは11 Pro Maxと共通系統。" },
-      { id: "xs", name: "iPhone XS", keywords: "xs 5.8 2018", year: 2018, inch: 5.8, connector: "Lightning", era: "x_se",
+        note: "フィルムは11 Pro Maxと共通。" },
+      { id: "xs", name: "iPhone XS", keywords: "xs 5.8 2018", year: 2018, inch: 5.8, connector: "Lightning",
         caseGroup: "c_x_xs", camGroup: "cam_x_xs", filmGroup: "f_x_xs_11p", cableGroup: "lightning",
-        note: "5.8インチ。Xとケース・フィルムの互換性あり。" },
-      { id: "x", name: "iPhone X", keywords: "x 5.8 2017", year: 2017, inch: 5.8, connector: "Lightning", era: "x_se",
+        note: "Xとケース・フィルム互換あり。" },
+      { id: "x", name: "iPhone X", keywords: "x 5.8 2017", year: 2017, inch: 5.8, connector: "Lightning",
         caseGroup: "c_x_xs", camGroup: "cam_x_xs", filmGroup: "f_x_xs_11p", cableGroup: "lightning",
-        note: "5.8インチ。XSとケース・フィルムの互換性あり。" },
-      { id: "se1", name: "iPhone SE (第1世代)", keywords: "se1 se 1 2016 4.0", year: 2016, inch: 4.0, connector: "Lightning", era: "x_se",
+        note: "XSとケース・フィルム互換あり。" },
+      { id: "se1", name: "iPhone SE (第1世代)", keywords: "se1 se 1 2016 4.0", year: 2016, inch: 4.0, connector: "Lightning",
         caseGroup: "c_40", camGroup: "cam_single_old", filmGroup: "f_40", cableGroup: "lightning",
-        note: "4.0インチ。iPhone 5 / 5sと完全互換。" },
-
-      // --- 初代〜8 Plus ---
-      { id: "8plus", name: "iPhone 8 Plus", keywords: "8 plus 5.5 2017", year: 2017, inch: 5.5, connector: "Lightning", era: "classic",
+        note: "iPhone 5 / 5sと完全互換。" },
+      { id: "8plus", name: "iPhone 8 Plus", keywords: "8 plus 5.5 2017", year: 2017, inch: 5.5, connector: "Lightning",
         caseGroup: "c_55_78", camGroup: "cam_78plus", filmGroup: "f_55", cableGroup: "lightning",
-        note: "5.5インチ。7 Plusとケース・フィルムが完全互換。" },
-      { id: "8", name: "iPhone 8", keywords: "8 4.7 2017", year: 2017, inch: 4.7, connector: "Lightning", era: "classic",
+        note: "7 Plusとケース・フィルム完全互換。" },
+      { id: "8", name: "iPhone 8", keywords: "8 4.7 2017", year: 2017, inch: 4.7, connector: "Lightning",
         caseGroup: "c_47", camGroup: "cam_single_old", filmGroup: "f_47", cableGroup: "lightning",
-        note: "4.7インチ。7・SE(第2/第3世代)と完全互換。" },
-      { id: "7plus", name: "iPhone 7 Plus", keywords: "7 plus 5.5 2016", year: 2016, inch: 5.5, connector: "Lightning", era: "classic",
+        note: "7・SE(第2/第3世代)と完全互換。" },
+      { id: "7plus", name: "iPhone 7 Plus", keywords: "7 plus 5.5 2016", year: 2016, inch: 5.5, connector: "Lightning",
         caseGroup: "c_55_78", camGroup: "cam_78plus", filmGroup: "f_55", cableGroup: "lightning",
-        note: "5.5インチ。8 Plusとケース・フィルムが完全互換。" },
-      { id: "7", name: "iPhone 7", keywords: "7 4.7 2016", year: 2016, inch: 4.7, connector: "Lightning", era: "classic",
+        note: "8 Plusとケース・フィルム完全互換。" },
+      { id: "7", name: "iPhone 7", keywords: "7 4.7 2016", year: 2016, inch: 4.7, connector: "Lightning",
         caseGroup: "c_47", camGroup: "cam_single_old", filmGroup: "f_47", cableGroup: "lightning",
-        note: "4.7インチ。8・SE(第2/第3世代)と完全互換。" },
-      { id: "6splus", name: "iPhone 6s Plus", keywords: "6s plus 5.5 2015", year: 2015, inch: 5.5, connector: "Lightning", era: "classic",
+        note: "8・SE(第2/第3世代)と完全互換。" },
+      { id: "6splus", name: "iPhone 6s Plus", keywords: "6s plus 5.5 2015", year: 2015, inch: 5.5, connector: "Lightning",
         caseGroup: "c_55_6", camGroup: "cam_single_old", filmGroup: "f_55", cableGroup: "lightning",
-        note: "5.5インチ。6 Plusとケース・フィルムが完全互換。" },
-      { id: "6plus", name: "iPhone 6 Plus", keywords: "6 plus 5.5 2014", year: 2014, inch: 5.5, connector: "Lightning", era: "classic",
+        note: "6 Plusとケース・フィルム完全互換。" },
+      { id: "6plus", name: "iPhone 6 Plus", keywords: "6 plus 5.5 2014", year: 2014, inch: 5.5, connector: "Lightning",
         caseGroup: "c_55_6", camGroup: "cam_single_old", filmGroup: "f_55", cableGroup: "lightning",
-        note: "5.5インチ。6s Plusとケース・フィルムが完全互換。" },
-      { id: "6s", name: "iPhone 6s", keywords: "6s 4.7 2015", year: 2015, inch: 4.7, connector: "Lightning", era: "classic",
+        note: "6s Plusとケース・フィルム完全互換。" },
+      { id: "6s", name: "iPhone 6s", keywords: "6s 4.7 2015", year: 2015, inch: 4.7, connector: "Lightning",
         caseGroup: "c_47_6", camGroup: "cam_single_old", filmGroup: "f_47", cableGroup: "lightning",
-        note: "4.7インチ。6とケース・フィルムが共通系統。" },
-      { id: "6", name: "iPhone 6", keywords: "6 4.7 2014", year: 2014, inch: 4.7, connector: "Lightning", era: "classic",
+        note: "6とケース・フィルム互換。" },
+      { id: "6", name: "iPhone 6", keywords: "6 4.7 2014", year: 2014, inch: 4.7, connector: "Lightning",
         caseGroup: "c_47_6", camGroup: "cam_single_old", filmGroup: "f_47", cableGroup: "lightning",
-        note: "4.7インチ。6sとケース・フィルムが共通系統。" },
-      { id: "5s", name: "iPhone 5s", keywords: "5s 4.0 2013", year: 2013, inch: 4.0, connector: "Lightning", era: "classic",
+        note: "6sとケース・フィルム互換。" },
+      { id: "5s", name: "iPhone 5s", keywords: "5s 4.0 2013", year: 2013, inch: 4.0, connector: "Lightning",
         caseGroup: "c_40", camGroup: "cam_single_old", filmGroup: "f_40", cableGroup: "lightning",
-        note: "4.0インチ。5・SE(第1世代)と完全互換。" },
-      { id: "5c", name: "iPhone 5c", keywords: "5c 4.0 2013", year: 2013, inch: 4.0, connector: "Lightning", era: "classic",
+        note: "5・SE(第1世代)と完全互換。" },
+      { id: "5c", name: "iPhone 5c", keywords: "5c 4.0 2013", year: 2013, inch: 4.0, connector: "Lightning",
         caseGroup: "c_5c", camGroup: "cam_single_old", filmGroup: "f_40", cableGroup: "lightning",
-        note: "4.0インチ。フィルムは5/5s/SE1と共通。ケースは独自筐体。" },
-      { id: "5", name: "iPhone 5", keywords: "5 4.0 2012", year: 2012, inch: 4.0, connector: "Lightning", era: "classic",
+        note: "フィルムは5/5s/SE1と共通。ケースは独自筐体。" },
+      { id: "5", name: "iPhone 5", keywords: "5 4.0 2012", year: 2012, inch: 4.0, connector: "Lightning",
         caseGroup: "c_40", camGroup: "cam_single_old", filmGroup: "f_40", cableGroup: "lightning",
-        note: "4.0インチ。5s・SE(第1世代)と完全互換。" },
-      { id: "4s", name: "iPhone 4s", keywords: "4s 3.5 2011", year: 2011, inch: 3.5, connector: "30-pin Dock", era: "classic",
+        note: "5s・SE(第1世代)と完全互換。" },
+      { id: "4s", name: "iPhone 4s", keywords: "4s 3.5 2011", year: 2011, inch: 3.5, connector: "30-pin Dock",
         caseGroup: "c_35_4", camGroup: "cam_single_old", filmGroup: "f_35_4", cableGroup: "dock30",
-        note: "3.5インチ。iPhone 4とほぼ互換（30ピンコネクタ）。" },
-      { id: "4", name: "iPhone 4", keywords: "4 3.5 2010", year: 2010, inch: 3.5, connector: "30-pin Dock", era: "classic",
+        note: "iPhone 4とほぼ互換（30ピンコネクタ）。" },
+      { id: "4", name: "iPhone 4", keywords: "4 3.5 2010", year: 2010, inch: 3.5, connector: "30-pin Dock",
         caseGroup: "c_35_4", camGroup: "cam_single_old", filmGroup: "f_35_4", cableGroup: "dock30",
-        note: "3.5インチ。iPhone 4sとほぼ互換（30ピンコネクタ）。" },
-      { id: "3gs", name: "iPhone 3GS", keywords: "3gs 3.5 2009", year: 2009, inch: 3.5, connector: "30-pin Dock", era: "classic",
+        note: "iPhone 4sとほぼ互換（30ピンコネクタ）。" },
+      { id: "3gs", name: "iPhone 3GS", keywords: "3gs 3.5 2009", year: 2009, inch: 3.5, connector: "30-pin Dock",
         caseGroup: "c_35_3g", camGroup: "cam_none", filmGroup: "f_35_3g", cableGroup: "dock30",
-        note: "3.5インチ。iPhone 3Gと互換（30ピンコネクタ）。" },
-      { id: "3g", name: "iPhone 3G", keywords: "3g 3.5 2008", year: 2008, inch: 3.5, connector: "30-pin Dock", era: "classic",
+        note: "iPhone 3Gと互換（30ピンコネクタ）。" },
+      { id: "3g", name: "iPhone 3G", keywords: "3g 3.5 2008", year: 2008, inch: 3.5, connector: "30-pin Dock",
         caseGroup: "c_35_3g", camGroup: "cam_none", filmGroup: "f_35_3g", cableGroup: "dock30",
-        note: "3.5インチ。iPhone 3GSと互換（30ピンコネクタ）。" },
-      { id: "1st", name: "初代 iPhone (2G)", keywords: "1st 2g 初代 3.5 2007", year: 2007, inch: 3.5, connector: "30-pin Dock", era: "classic",
+        note: "iPhone 3GSと互換（30ピンコネクタ）。" },
+      { id: "1st", name: "初代 iPhone (2G)", keywords: "1st 2g 初代 3.5 2007", year: 2007, inch: 3.5, connector: "30-pin Dock",
         caseGroup: "c_1st", camGroup: "cam_none", filmGroup: "f_1st", cableGroup: "dock30",
-        note: "3.5インチ初代モデル（30ピンコネクタ）。" }
+        note: "初代モデル（30ピンコネクタ）。" }
     ];
-
-    let currentEra = 'latest';
 
     // グループ一致判定
     function compareGroup(a, b, fullProp, partialProp = null) {
@@ -317,297 +352,276 @@
       return 'none';
     }
 
-    function getCaseStatus(a, b) {
-      if (a.id === b.id) return 'same';
-      return compareGroup(a, b, 'caseGroup', 'casePartial');
-    }
-
-    function getItemStatuses(a, b) {
+    function getStatuses(a, b) {
       return {
-        caseSt: a.id === b.id ? 'full' : compareGroup(a, b, 'caseGroup', 'casePartial'),
-        camSt: a.id === b.id ? 'full' : compareGroup(a, b, 'camGroup'),
-        filmSt: a.id === b.id ? 'full' : compareGroup(a, b, 'filmGroup'),
-        cableSt: a.id === b.id ? 'full' : compareGroup(a, b, 'cableGroup')
+        caseSt: compareGroup(a, b, 'caseGroup', 'casePartial'),
+        camSt: compareGroup(a, b, 'camGroup'),
+        filmSt: compareGroup(a, b, 'filmGroup'),
+        cableSt: compareGroup(a, b, 'cableGroup')
       };
     }
 
-    function badgeHtml(st) {
-      if (st === 'full') {
-        return `<span class="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 font-extrabold text-sm">◎ 互換あり</span>`;
-      }
-      if (st === 'partial') {
-        return `<span class="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-700 font-extrabold text-sm">△ 条件付き</span>`;
-      }
-      return `<span class="inline-block px-3 py-1 rounded-full bg-rose-100 text-rose-700 font-extrabold text-sm">× 非互換</span>`;
+    // バッジ表示（カード用）
+    function cardBadge(st) {
+      if (st === 'full') return `<span class="inline-block px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-extrabold text-xs md:text-sm">◎ 互換あり</span>`;
+      if (st === 'partial') return `<span class="inline-block px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-700 font-extrabold text-xs md:text-sm">△ 条件付き</span>`;
+      return `<span class="inline-block px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 font-extrabold text-xs md:text-sm">× 非互換</span>`;
     }
 
-    // 検索＆セレクトリスト絞り込み
-    function filterModelList(side) {
-      const inputEl = document.getElementById(`search-${side}`);
-      const selectEl = document.getElementById(`model-${side}`);
-      const q = inputEl.value.trim().toLowerCase();
-      const prevVal = selectEl.value;
+    // 記号バッジ（一覧テーブル用）
+    function symbolBadge(st) {
+      if (st === 'full') return `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 font-extrabold text-xs">◎</span>`;
+      if (st === 'partial') return `<span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-100 text-amber-600 font-extrabold text-xs">△</span>`;
+      return `<span class="text-slate-300 font-bold text-xs">×</span>`;
+    }
 
-      const filtered = iphoneModels.filter(m => {
-        if (!q) return true;
-        return m.name.toLowerCase().includes(q) ||
-               m.keywords.toLowerCase().includes(q) ||
-               String(m.year).includes(q) ||
-               String(m.inch).includes(q);
-      });
+    // ドロップダウン絞り込み（a / b / single 共通）
+    function filterSelect(key) {
+      const q = document.getElementById(`search-${key}`).value.trim().toLowerCase();
+      const sel = document.getElementById(`model-${key}`);
+      const prev = sel.value;
 
-      selectEl.innerHTML = '';
+      const filtered = iphoneModels.filter(m =>
+        !q ||
+        m.name.toLowerCase().includes(q) ||
+        m.keywords.toLowerCase().includes(q) ||
+        String(m.year).includes(q) ||
+        String(m.inch).includes(q)
+      );
+
+      sel.innerHTML = '';
       filtered.forEach(m => {
-        const opt = new Option(`${m.name} (${m.year}年 / ${m.inch}")`, m.id);
-        selectEl.add(opt);
+        sel.add(new Option(`${m.name} (${m.year} / ${m.inch}")`, m.id));
       });
 
       if (filtered.length > 0) {
-        if (filtered.some(m => m.id === prevVal)) {
-          selectEl.value = prevVal;
-        } else {
-          selectEl.selectedIndex = 0;
-        }
+        if (filtered.some(m => m.id === prev)) sel.value = prev;
+        else sel.selectedIndex = 0;
       }
-      checkCompatibility();
+
+      if (key === 'single') renderSingleCompat();
+      else checkCompatibility();
     }
 
-    // 4項目別 判定描画
+    // ==========================================
+    // 1. 2機種比較ロジック
+    // ==========================================
     function checkCompatibility() {
       const idA = document.getElementById('model-a').value;
       const idB = document.getElementById('model-b').value;
-      const box = document.getElementById('result-box');
+      const cardsEl = document.getElementById('result-cards');
+      const notesEl = document.getElementById('result-notes');
 
       if (!idA || !idB) {
-        box.innerHTML = `<div class="p-6 rounded-xl bg-slate-100 text-center text-slate-600">該当する機種が見つかりません。検索条件を変えてください。</div>`;
+        cardsEl.innerHTML = `<div class="p-4 rounded-xl bg-slate-100 text-center text-xs text-slate-500">一致する機種がありません</div>`;
+        notesEl.innerHTML = '';
         return;
       }
 
       const mA = iphoneModels.find(m => m.id === idA);
       const mB = iphoneModels.find(m => m.id === idB);
 
-      document.getElementById('selected-label-a').textContent = `選択中：${mA.name}（${mA.year}年発売 / ${mA.inch}インチ / ${mA.connector}）`;
-      document.getElementById('selected-label-b').textContent = `選択中：${mB.name}（${mB.year}年発売 / ${mB.inch}インチ / ${mB.connector}）`;
+      document.getElementById('meta-a').textContent = `${mA.year}年 / ${mA.inch}" / ${mA.connector}`;
+      document.getElementById('meta-b').textContent = `${mB.year}年 / ${mB.inch}" / ${mB.connector}`;
 
-      const st = getItemStatuses(mA, mB);
-
+      const st = getStatuses(mA, mB);
       const items = [
-        {
-          title: "🛡️ ケース",
-          status: st.caseSt,
-          desc: st.caseSt === 'full' ? "外寸・ボタン・カメラ枠が一致" :
-                st.caseSt === 'partial' ? "寸法や開口部により一部流用可" : "サイズ・ボタン・カメラ枠が不一致"
-        },
-        {
-          title: "📷 カメラカバー",
-          status: st.camSt,
-          desc: st.camSt === 'full' ? "レンズ配置・台座形状が一致" : "レンズ数・配置・台座形状が不一致"
-        },
-        {
-          title: "🖼️ 保護フィルム",
-          status: st.filmSt,
-          desc: st.filmSt === 'full' ? "画面サイズ・上部形状が一致" : "画面サイズ・ノッチ/島形状が不一致"
-        },
-        {
-          title: "🔌 充電ケーブル",
-          status: st.cableSt,
-          desc: st.cableSt === 'full' ? `有線端子（${mA.connector}）が一致` : `${mA.connector} と ${mB.connector} で端子が異なります`
-        }
+        { title: "🛡️ ケース", st: st.caseSt, sub: st.caseSt === 'full' ? "外寸・枠一致" : st.caseSt === 'partial' ? "条件付き流用可" : "サイズ・枠不一致" },
+        { title: "📷 カメラカバー", st: st.camSt, sub: st.camSt === 'full' ? "レンズ・台座一致" : "レンズ配置不一致" },
+        { title: "🖼️ 保護フィルム", st: st.filmSt, sub: st.filmSt === 'full' ? "画面・上部一致" : "画面形状不一致" },
+        { title: "🔌 充電ケーブル", st: st.cableSt, sub: st.cableSt === 'full' ? `${mA.connector} 一致` : `${mA.connector} ≠ ${mB.connector}` }
       ];
 
-      box.innerHTML = `
-        <div class="p-4 md:p-5 rounded-xl bg-slate-50 border border-slate-200 mb-4 text-center">
-          <div class="text-sm md:text-base font-bold text-slate-800">
-            <span class="text-blue-700">${mA.name}</span>
-            <span class="mx-2 text-slate-400">⇔</span>
-            <span class="text-blue-700">${mB.name}</span>
-          </div>
-          <p class="text-xs text-slate-500 mt-1">
-            ${mA.name}（${mA.year}年・${mA.inch}型） ／ ${mB.name}（${mB.year}年・${mB.inch}型）
-          </p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      cardsEl.innerHTML = `
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
           ${items.map(it => `
-            <div class="p-4 rounded-xl border border-slate-200 bg-white flex flex-col justify-between text-center shadow-2xs">
-              <div class="text-sm font-bold text-slate-800 mb-2">${it.title}</div>
-              <div class="my-1">${badgeHtml(it.status)}</div>
-              <p class="text-xs text-slate-500 mt-2">${it.desc}</p>
+            <div class="p-3 rounded-xl border ${it.st === 'full' ? 'border-emerald-200 bg-emerald-50/30' : it.st === 'partial' ? 'border-amber-200 bg-amber-50/30' : 'border-slate-200 bg-slate-50/50'} text-center">
+              <div class="text-xs font-bold text-slate-700 mb-1.5">${it.title}</div>
+              <div>${cardBadge(it.st)}</div>
+              <div class="text-[11px] text-slate-500 mt-1.5">${it.sub}</div>
             </div>
           `).join('')}
         </div>
+      `;
 
-        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs md:text-sm">
-          <div class="p-3.5 rounded-lg bg-blue-50/60 border border-blue-100 text-slate-700">
-            <strong>${mA.name}：</strong>${mA.note}
+      notesEl.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs text-slate-600">
+          <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+            <strong class="text-slate-800">${mA.name}：</strong>${mA.note}
           </div>
-          <div class="p-3.5 rounded-lg bg-blue-50/60 border border-blue-100 text-slate-700">
-            <strong>${mB.name}：</strong>${mB.note}
+          <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+            <strong class="text-slate-800">${mB.name}：</strong>${mB.note}
           </div>
         </div>
       `;
     }
 
-    // 世代切り替え
-    function setEra(era) {
-      currentEra = era;
-      document.querySelectorAll('.era-btn').forEach(btn => {
-        const active = btn.dataset.era === era;
-        btn.className = active
-          ? "era-btn px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold bg-blue-600 text-white"
-          : "era-btn px-3 py-1.5 rounded-lg text-xs md:text-sm font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200";
-      });
-      renderMatrix();
-    }
+    // ==========================================
+    // 2. 1機種から互換機種一覧ロジック
+    // ==========================================
+    function renderSingleCompat() {
+      const baseId = document.getElementById('model-single').value;
+      const filterMode = document.getElementById('single-filter').value;
+      const tbody = document.getElementById('single-tbody');
+      const summaryEl = document.getElementById('single-summary');
 
-    // マトリクス表描画
-    function renderMatrix() {
-      const list = iphoneModels.filter(m => {
-        if (currentEra === 'x_se') return m.era === 'x_se' || m.id === '8' || m.id === '7';
-        return m.era === currentEra;
-      });
-
-      const table = document.getElementById('matrix-table');
-      let html = '<thead><tr class="bg-slate-100 border-b border-slate-300">';
-      html += '<th class="p-2.5 text-left font-bold text-slate-700 sticky-col bg-slate-100 min-w-[140px] border-r border-slate-200">機種名</th>';
-      list.forEach(col => {
-        html += `<th class="p-2 font-semibold text-slate-700 min-w-[76px] border-r border-slate-200 leading-tight">${col.name.replace('iPhone ', '')}</th>`;
-      });
-      html += '</tr></thead><tbody class="divide-y divide-slate-200">';
-
-      list.forEach(row => {
-        html += `<tr class="hover:bg-blue-50/40">`;
-        html += `<td class="p-2.5 text-left font-bold text-slate-800 sticky-col bg-white border-r border-slate-200 whitespace-nowrap">${row.name}</td>`;
-        list.forEach(col => {
-          const st = getCaseStatus(row, col);
-          if (st === 'same') {
-            html += `<td class="p-2 bg-slate-100 text-slate-400 border-r border-slate-200">-</td>`;
-          } else if (st === 'full') {
-            html += `<td onclick="jumpToCheck('${row.id}','${col.id}')" title="クリックして4項目判定へ" class="p-2 bg-emerald-50 text-emerald-600 font-extrabold text-base cursor-pointer hover:bg-emerald-100 border-r border-slate-200">◎</td>`;
-          } else if (st === 'partial') {
-            html += `<td onclick="jumpToCheck('${row.id}','${col.id}')" title="クリックして4項目判定へ" class="p-2 bg-amber-50 text-amber-500 font-extrabold text-base cursor-pointer hover:bg-amber-100 border-r border-slate-200">△</td>`;
-          } else {
-            html += `<td class="p-2 text-slate-300 border-r border-slate-200">×</td>`;
-          }
-        });
-        html += `</tr>`;
-      });
-      html += '</tbody>';
-      table.innerHTML = html;
-
-      const notesContainer = document.getElementById('era-notes');
-      const notedModels = list.filter(m =>
-        list.some(other => other.id !== m.id && getCaseStatus(m, other) !== 'none')
-      );
-      notesContainer.innerHTML = notedModels.length === 0
-        ? `<p class="text-slate-500 col-span-2">この世代内で互換性のある組み合わせはありません。</p>`
-        : notedModels.map(m => `
-            <div class="p-3 rounded-lg bg-slate-50 border border-slate-200">
-              <span class="font-bold text-slate-800">${m.name}（${m.inch}"）：</span>
-              <span class="text-slate-600">${m.note}</span>
-            </div>
-          `).join('');
-    }
-
-    // 発売年・インチ数 逆引きフィルタ初期化＆描画
-    function initSpecFilters() {
-      const years = [...new Set(iphoneModels.map(m => m.year))].sort((a, b) => b - a);
-      const inches = [...new Set(iphoneModels.map(m => m.inch))].sort((a, b) => b - a);
-
-      const yearSel = document.getElementById('filter-year');
-      years.forEach(y => yearSel.add(new Option(`${y}年`, String(y))));
-
-      const inchSel = document.getElementById('filter-inch');
-      inches.forEach(i => inchSel.add(new Option(`${i} インチ`, String(i))));
-
-      renderSpecTable();
-    }
-
-    function renderSpecTable() {
-      const yearVal = document.getElementById('filter-year').value;
-      const inchVal = document.getElementById('filter-inch').value;
-      const kw = document.getElementById('filter-keyword').value.trim().toLowerCase();
-
-      const rows = iphoneModels.filter(m => {
-        if (yearVal !== 'all' && String(m.year) !== yearVal) return false;
-        if (inchVal !== 'all' && String(m.inch) !== inchVal) return false;
-        if (kw) {
-          return m.name.toLowerCase().includes(kw) ||
-                 m.keywords.toLowerCase().includes(kw) ||
-                 m.connector.toLowerCase().includes(kw) ||
-                 String(m.year).includes(kw) ||
-                 String(m.inch).includes(kw) ||
-                 m.note.toLowerCase().includes(kw);
-        }
-        return true;
-      });
-
-      const tbody = document.getElementById('spec-table-body');
-      if (rows.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-500">条件に一致する機種がありません。</td></tr>`;
+      if (!baseId) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-400">機種が見つかりません</td></tr>`;
+        summaryEl.innerHTML = '';
         return;
       }
 
-      tbody.innerHTML = rows.map(m => `
+      const base = iphoneModels.find(m => m.id === baseId);
+      document.getElementById('meta-single').textContent = `${base.year}年 / ${base.inch}" / ${base.connector}`;
+
+      summaryEl.innerHTML = `
+        <div class="p-2.5 rounded-lg bg-blue-50/70 border border-blue-200 text-xs text-slate-700">
+          <strong class="text-blue-900">${base.name}（${base.year}年・${base.inch}インチ）のメモ：</strong>${base.note}
+        </div>
+      `;
+
+      const candidates = iphoneModels
+        .filter(m => m.id !== base.id)
+        .map(m => ({ model: m, st: getStatuses(base, m) }))
+        .filter(({ st }) => {
+          if (filterMode === 'case') return st.caseSt !== 'none';
+          if (filterMode === 'cam') return st.camSt !== 'none';
+          if (filterMode === 'film') return st.filmSt !== 'none';
+          if (filterMode === 'any_case_cam_film') {
+            return st.caseSt !== 'none' || st.camSt !== 'none' || st.filmSt !== 'none';
+          }
+          return true;
+        });
+
+      if (candidates.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="py-6 text-center text-xs text-slate-500">
+              この条件で互換性のある他機種はありません（専用設計モデルです）。<br>
+              上のフィルタを「すべて表示」に変えると充電ケーブルが共通の機種を確認できます。
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = candidates.map(({ model, st }) => `
         <tr class="hover:bg-slate-50">
-          <td class="py-3 px-3 font-bold text-slate-900 whitespace-nowrap">${m.name}</td>
-          <td class="py-3 px-3 text-slate-700 whitespace-nowrap">${m.year}年</td>
-          <td class="py-3 px-3 font-semibold text-blue-700 whitespace-nowrap">${m.inch} インチ</td>
-          <td class="py-3 px-3 text-slate-600 whitespace-nowrap">${m.connector}</td>
-          <td class="py-3 px-3 text-slate-600">${m.note}</td>
-          <td class="py-3 px-3 text-center whitespace-nowrap">
-            <button onclick="selectModelForCheck('${m.id}')" class="px-2.5 py-1 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 font-semibold text-xs">
-              比較に使う
+          <td class="py-2 px-2.5">
+            <div class="font-bold text-slate-900">${model.name}</div>
+            <div class="text-[11px] text-slate-400">${model.year}年 / ${model.inch}"</div>
+          </td>
+          <td class="py-2 px-1.5 text-center">${symbolBadge(st.caseSt)}</td>
+          <td class="py-2 px-1.5 text-center">${symbolBadge(st.camSt)}</td>
+          <td class="py-2 px-1.5 text-center">${symbolBadge(st.filmSt)}</td>
+          <td class="py-2 px-1.5 text-center">${symbolBadge(st.cableSt)}</td>
+          <td class="py-2 px-2 text-right whitespace-nowrap">
+            <button onclick="jumpToCompare('${base.id}', '${model.id}')"
+                    class="px-2 py-1 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 font-semibold text-[11px]">
+              2機種比較へ
             </button>
           </td>
         </tr>
       `).join('');
     }
 
-    function selectModelForCheck(modelId) {
-      document.getElementById('search-b').value = '';
-      filterModelList('b');
-      document.getElementById('model-b').value = modelId;
-      checkCompatibility();
-      switchTab('checker');
+    // ==========================================
+    // 3. 発売年・インチ数 逆引き表ロジック
+    // ==========================================
+    function initSpecFilters() {
+      const years = [...new Set(iphoneModels.map(m => m.year))].sort((a, b) => b - a);
+      const inches = [...new Set(iphoneModels.map(m => m.inch))].sort((a, b) => b - a);
+
+      const ySel = document.getElementById('filter-year');
+      years.forEach(y => ySel.add(new Option(`${y}年`, String(y))));
+
+      const iSel = document.getElementById('filter-inch');
+      inches.forEach(i => iSel.add(new Option(`${i} インチ`, String(i))));
+
+      renderSpecTable();
     }
 
-    function jumpToCheck(idA, idB) {
+    function renderSpecTable() {
+      const yVal = document.getElementById('filter-year').value;
+      const iVal = document.getElementById('filter-inch').value;
+      const kw = document.getElementById('filter-keyword').value.trim().toLowerCase();
+
+      const rows = iphoneModels.filter(m => {
+        if (yVal !== 'all' && String(m.year) !== yVal) return false;
+        if (iVal !== 'all' && String(m.inch) !== iVal) return false;
+        if (kw) {
+          return m.name.toLowerCase().includes(kw) ||
+                 m.keywords.toLowerCase().includes(kw) ||
+                 m.connector.toLowerCase().includes(kw) ||
+                 String(m.year).includes(kw) ||
+                 String(m.inch).includes(kw);
+        }
+        return true;
+      });
+
+      const tbody = document.getElementById('spec-tbody');
+      if (rows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-slate-400">一致する機種がありません</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = rows.map(m => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-2 px-2.5 font-bold text-slate-900 whitespace-nowrap">${m.name}</td>
+          <td class="py-2 px-2 text-slate-600 whitespace-nowrap">${m.year}年</td>
+          <td class="py-2 px-2 font-semibold text-blue-700 whitespace-nowrap">${m.inch}"</td>
+          <td class="py-2 px-2 text-slate-600 whitespace-nowrap">${m.connector}</td>
+          <td class="py-2 px-2 text-right whitespace-nowrap space-x-1">
+            <button onclick="jumpToSingle('${m.id}')" class="px-2 py-1 rounded bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-semibold text-[11px]">
+              互換一覧
+            </button>
+            <button onclick="jumpToCompare('${m.id}', '18p')" class="px-2 py-1 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 font-semibold text-[11px]">
+              比較へ
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // タブ間ジャンプ用ヘルパー
+    function jumpToCompare(idA, idB) {
       document.getElementById('search-a').value = '';
       document.getElementById('search-b').value = '';
-      filterModelList('a');
-      filterModelList('b');
+      filterSelect('a');
+      filterSelect('b');
       document.getElementById('model-a').value = idA;
       document.getElementById('model-b').value = idB;
       checkCompatibility();
       switchTab('checker');
     }
 
-    function switchTab(tab) {
-      document.getElementById('view-checker').classList.toggle('hidden', tab !== 'checker');
-      document.getElementById('view-matrix').classList.toggle('hidden', tab !== 'matrix');
-      document.getElementById('view-spec').classList.toggle('hidden', tab !== 'spec');
+    function jumpToSingle(id) {
+      document.getElementById('search-single').value = '';
+      filterSelect('single');
+      document.getElementById('model-single').value = id;
+      renderSingleCompat();
+      switchTab('single');
+    }
 
-      const map = {
-        checker: 'tab-checker',
-        matrix: 'tab-matrix',
-        spec: 'tab-spec'
-      };
-      Object.entries(map).forEach(([k, btnId]) => {
-        const el = document.getElementById(btnId);
-        el.className = (k === tab)
-          ? "flex-1 min-w-[140px] py-3.5 font-semibold text-blue-600 border-b-2 border-blue-600 text-xs md:text-base"
-          : "flex-1 min-w-[140px] py-3.5 font-semibold text-slate-500 hover:text-slate-700 text-xs md:text-base";
+    function switchTab(tab) {
+      ['checker', 'single', 'spec'].forEach(t => {
+        const isCurrent = t === tab;
+        document.getElementById(`view-${t}`).classList.toggle('hidden', !isCurrent);
+        document.getElementById(`tab-${t}`).className = isCurrent
+          ? "py-2.5 px-2 text-blue-600 border-b-2 border-blue-600 bg-blue-50/40"
+          : "py-2.5 px-2 text-slate-500 hover:text-slate-700 border-b border-slate-200";
       });
     }
 
     // 初期起動
-    filterModelList('a');
-    filterModelList('b');
+    filterSelect('a');
+    filterSelect('b');
+    filterSelect('single');
     document.getElementById('model-a').value = '18p';
     document.getElementById('model-b').value = '17p';
+    document.getElementById('model-single').value = '14';
     checkCompatibility();
-    renderMatrix();
+    renderSingleCompat();
     initSpecFilters();
   </script>
 </body>
