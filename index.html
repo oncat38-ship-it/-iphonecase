@@ -11,29 +11,29 @@
     <!-- コンパクトヘッダー＆デバイス切り替え -->
     <header class="flex flex-wrap items-center justify-between gap-2 mb-3 px-1">
       <div class="flex items-center gap-2">
-        <h1 id="app-title" class="text-base md:text-xl font-bold text-slate-900">📱 iPhone 互換チェッカー</h1>
+        <h1 id="app-title" class="text-base md:text-xl font-bold text-slate-900">📱 iPhone 周辺機器・ケース互換チェッカー</h1>
       </div>
 
       <!-- デバイス切り替えスイッチ -->
       <div class="inline-flex rounded-lg bg-slate-200 p-1 text-xs md:text-sm font-bold">
-        <button id="dev-iphone" onclick="switchDevice('iphone')" class="px-3 py-1 rounded-md bg-white text-blue-700 shadow-2xs transition">
+        <button id="dev-iphone" type="button" onclick="switchDevice('iphone')" class="px-3 py-1 rounded-md bg-white text-blue-700 shadow-2xs transition">
           📱 iPhone
         </button>
-        <button id="dev-ipad" onclick="switchDevice('ipad')" class="px-3 py-1 rounded-md text-slate-600 hover:text-slate-900 transition">
+        <button id="dev-ipad" type="button" onclick="switchDevice('ipad')" class="px-3 py-1 rounded-md text-slate-600 hover:text-slate-900 transition">
           📟 iPad
         </button>
       </div>
     </header>
 
-    <!-- メインタブ（3タブ構成・管理UIなし） -->
+    <!-- メインタブ -->
     <div class="grid grid-cols-3 bg-white rounded-t-xl border border-b-0 border-slate-200 overflow-hidden text-xs md:text-sm font-bold">
-      <button id="tab-checker" onclick="switchTab('checker')" class="py-2.5 px-2 text-blue-600 border-b-2 border-blue-600 bg-blue-50/40">
+      <button id="tab-checker" type="button" onclick="switchTab('checker')" class="py-2.5 px-2 text-blue-600 border-b-2 border-blue-600 bg-blue-50/40">
         🔍 2機種比較
       </button>
-      <button id="tab-single" onclick="switchTab('single')" class="py-2.5 px-2 text-slate-500 hover:text-slate-700 border-b border-slate-200">
+      <button id="tab-single" type="button" onclick="switchTab('single')" class="py-2.5 px-2 text-slate-500 hover:text-slate-700 border-b border-slate-200">
         📋 互換一覧
       </button>
-      <button id="tab-spec" onclick="switchTab('spec')" class="py-2.5 px-2 text-slate-500 hover:text-slate-700 border-b border-slate-200">
+      <button id="tab-spec" type="button" onclick="switchTab('spec')" class="py-2.5 px-2 text-slate-500 hover:text-slate-700 border-b border-slate-200">
         📅 年・インチ逆引き
       </button>
     </div>
@@ -46,11 +46,11 @@
         <!-- 機種 A -->
         <div>
           <div class="flex items-center justify-between mb-1">
-            <label class="text-xs font-bold text-slate-700">機種 A（手持ちケース等）</label>
+            <label for="model-a" class="text-xs font-bold text-slate-700">機種 A（手持ちケース等）</label>
             <span id="meta-a" class="text-[11px] text-blue-700 font-medium"></span>
           </div>
           <div class="flex gap-1.5">
-            <input type="text" id="search-a" oninput="filterSelect('a')" placeholder="英数字検索..."
+            <input type="text" id="search-a" oninput="onSearchInput('a')" placeholder="英数字検索..."
                    class="w-2/5 p-2 border border-slate-300 rounded-lg bg-white text-xs focus:ring-2 focus:ring-blue-500 outline-none">
             <select id="model-a" onchange="checkCompatibility()"
                     class="w-3/5 p-2 border border-slate-300 rounded-lg bg-white text-xs md:text-sm font-semibold focus:ring-2 focus:ring-blue-500 outline-none"></select>
@@ -60,11 +60,11 @@
         <!-- 機種 B -->
         <div>
           <div class="flex items-center justify-between mb-1">
-            <label class="text-xs font-bold text-slate-700">機種 B（使用する本体）</label>
+            <label for="model-b" class="text-xs font-bold text-slate-700">機種 B（使用する本体）</label>
             <span id="meta-b" class="text-[11px] text-blue-700 font-medium"></span>
           </div>
           <div class="flex gap-1.5">
-            <input type="text" id="search-b" oninput="filterSelect('b')" placeholder="英数字検索..."
+            <input type="text" id="search-b" oninput="onSearchInput('b')" placeholder="英数字検索..."
                    class="w-2/5 p-2 border border-slate-300 rounded-lg bg-white text-xs focus:ring-2 focus:ring-blue-500 outline-none">
             <select id="model-b" onchange="checkCompatibility()"
                     class="w-3/5 p-2 border border-slate-300 rounded-lg bg-white text-xs md:text-sm font-semibold focus:ring-2 focus:ring-blue-500 outline-none"></select>
@@ -72,7 +72,7 @@
         </div>
       </div>
 
-      <!-- ファーストビュー結果エリア（4項目カード） -->
+      <!-- 4項目カード -->
       <div id="result-cards" class="mt-3.5"></div>
 
       <!-- 詳細メモ -->
@@ -87,11 +87,11 @@
         <div class="grid grid-cols-1 md:grid-cols-12 gap-2.5 items-end">
           <div class="md:col-span-7">
             <div class="flex items-center justify-between mb-1">
-              <label class="text-xs font-bold text-slate-700">基準となる機種を選択</label>
+              <label for="model-single" class="text-xs font-bold text-slate-700">基準となる機種を選択</label>
               <span id="meta-single" class="text-[11px] text-blue-700 font-medium"></span>
             </div>
             <div class="flex gap-1.5">
-              <input type="text" id="search-single" oninput="filterSelect('single')" placeholder="英数字で絞り込み..."
+              <input type="text" id="search-single" oninput="onSearchInput('single')" placeholder="英数字で絞り込み..."
                      class="w-2/5 p-2 border border-slate-300 rounded-lg bg-white text-xs focus:ring-2 focus:ring-blue-500 outline-none">
               <select id="model-single" onchange="renderSingleCompat()"
                       class="w-3/5 p-2 border border-slate-300 rounded-lg bg-white text-xs md:text-sm font-semibold focus:ring-2 focus:ring-blue-500 outline-none"></select>
@@ -99,10 +99,10 @@
           </div>
 
           <div class="md:col-span-5">
-            <label class="block text-xs font-bold text-slate-700 mb-1">表示条件フィルタ</label>
+            <label for="single-filter" class="block text-xs font-bold text-slate-700 mb-1">表示条件フィルタ</label>
             <select id="single-filter" onchange="renderSingleCompat()"
                     class="w-full p-2 border border-slate-300 rounded-lg bg-white text-xs md:text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none">
-              <option value="any_body">ケース・カメラ/Pencil・フィルムのいずれかが合う機種</option>
+              <option value="any_body">ケース・アクセサリ・フィルムのいずれかが合う機種</option>
               <option value="case">🛡️ ケースが互換（◎/△）の機種のみ</option>
               <option value="cam" id="filter-opt-cam">📷 カメラカバーが互換（◎）の機種のみ</option>
               <option value="film">🖼️ 保護フィルムが互換（◎）の機種のみ</option>
@@ -128,19 +128,19 @@
     <div id="view-spec" class="hidden bg-white p-3.5 md:p-5 rounded-b-xl shadow-xs border border-slate-200">
       <div class="grid grid-cols-3 gap-2 bg-slate-50 p-3 rounded-xl border border-slate-200 mb-3.5">
         <div>
-          <label class="block text-[11px] font-bold text-slate-600 mb-1">発売年</label>
+          <label for="filter-year" class="block text-[11px] font-bold text-slate-600 mb-1">発売年</label>
           <select id="filter-year" onchange="renderSpecTable()" class="w-full p-2 border border-slate-300 rounded-lg bg-white text-xs md:text-sm">
             <option value="all">すべて</option>
           </select>
         </div>
         <div>
-          <label class="block text-[11px] font-bold text-slate-600 mb-1">インチ数</label>
+          <label for="filter-inch" class="block text-[11px] font-bold text-slate-600 mb-1">インチ数</label>
           <select id="filter-inch" onchange="renderSpecTable()" class="w-full p-2 border border-slate-300 rounded-lg bg-white text-xs md:text-sm">
             <option value="all">すべて</option>
           </select>
         </div>
         <div>
-          <label class="block text-[11px] font-bold text-slate-600 mb-1">キーワード</label>
+          <label for="filter-keyword" class="block text-[11px] font-bold text-slate-600 mb-1">キーワード</label>
           <input type="text" id="filter-keyword" oninput="renderSpecTable()" placeholder="例: 11, pro, air..."
                  class="w-full p-2 border border-slate-300 rounded-lg bg-white text-xs md:text-sm">
         </div>
@@ -430,13 +430,14 @@
       ]
     };
 
-    let currentDevice = "iphone"; // 'iphone' or 'ipad'
+    let currentDevice = "iphone";
 
     function getModels() {
-      return COMPAT_DATA[currentDevice];
+      return COMPAT_DATA[currentDevice] || [];
     }
 
     function compareGroup(a, b, fullProp, partialProp = null) {
+      if (!a || !b) return 'none';
       if (a.id === b.id) return 'full';
       if (a[fullProp] && b[fullProp] && a[fullProp] === b[fullProp]) return 'full';
       if (partialProp && a[partialProp] && b[partialProp] && a[partialProp] === b[partialProp]) return 'partial';
@@ -493,53 +494,10 @@
       return `<span class="text-slate-300 font-bold text-xs">×</span>`;
     }
 
-    // ============================================================
-    // デバイス切り替え（iPhone ⇔ iPad 全画面反映）
-    // ============================================================
-    function switchDevice(dev) {
-      currentDevice = dev;
-      const meta = getDeviceMeta();
-
-      document.getElementById('app-title').textContent = meta.title;
-      document.getElementById('filter-opt-cam').textContent = meta.filterCamText;
-      document.getElementById('search-a').placeholder = meta.searchA;
-      document.getElementById('search-b').placeholder = meta.searchB;
-      document.getElementById('search-single').placeholder = meta.searchSingle;
-      document.getElementById('filter-keyword').placeholder = meta.specKw;
-
-      document.getElementById('dev-iphone').className = dev === 'iphone'
-        ? "px-3 py-1 rounded-md bg-white text-blue-700 shadow-2xs transition"
-        : "px-3 py-1 rounded-md text-slate-600 hover:text-slate-900 transition";
-      document.getElementById('dev-ipad').className = dev === 'ipad'
-        ? "px-3 py-1 rounded-md bg-white text-blue-700 shadow-2xs transition"
-        : "px-3 py-1 rounded-md text-slate-600 hover:text-slate-900 transition";
-
-      ['a', 'b', 'single'].forEach(k => {
-        document.getElementById(`search-${k}`).value = '';
-        filterSelect(k);
-      });
-
-      document.getElementById('filter-year').value = 'all';
-      document.getElementById('filter-inch').value = 'all';
-      document.getElementById('filter-keyword').value = '';
-      document.getElementById('single-filter').value = 'any_body';
-
-      const list = getModels();
-      if (list.length >= 2) {
-        document.getElementById('model-a').selectedIndex = 0;
-        document.getElementById('model-b').selectedIndex = 1;
-        document.getElementById('model-single').selectedIndex = 0;
-      }
-
-      checkCompatibility();
-      renderSingleCompat();
-      initSpecFilters();
-    }
-
-    function filterSelect(key) {
+    // プルダウンのオプションだけを差し替える（再描画は呼び出し側でまとめて行う）
+    function populateSelectOptions(key, preferredId = null) {
       const q = document.getElementById(`search-${key}`).value.trim().toLowerCase();
       const sel = document.getElementById(`model-${key}`);
-      const prev = sel.value;
       const list = getModels();
 
       const filtered = list.filter(m =>
@@ -556,12 +514,61 @@
       });
 
       if (filtered.length > 0) {
-        if (filtered.some(m => m.id === prev)) sel.value = prev;
-        else sel.selectedIndex = 0;
+        if (preferredId && filtered.some(m => m.id === preferredId)) {
+          sel.value = preferredId;
+        } else {
+          sel.selectedIndex = 0;
+        }
       }
+    }
 
+    // ユーザーが検索ボックスを入力した時
+    function onSearchInput(key) {
+      populateSelectOptions(key);
       if (key === 'single') renderSingleCompat();
       else checkCompatibility();
+    }
+
+    // ============================================================
+    // デバイス切り替え（iPhone ⇔ iPad 全画面一括更新）
+    // ============================================================
+    function switchDevice(dev) {
+      currentDevice = dev;
+      const meta = getDeviceMeta();
+      const list = getModels();
+
+      // ヘッダー・プレースホルダー・フィルタ文言の更新
+      document.getElementById('app-title').textContent = meta.title;
+      document.getElementById('filter-opt-cam').textContent = meta.filterCamText;
+      document.getElementById('search-a').placeholder = meta.searchA;
+      document.getElementById('search-b').placeholder = meta.searchB;
+      document.getElementById('search-single').placeholder = meta.searchSingle;
+      document.getElementById('filter-keyword').placeholder = meta.specKw;
+
+      // トグルボタンの見た目更新
+      document.getElementById('dev-iphone').className = dev === 'iphone'
+        ? "px-3 py-1 rounded-md bg-white text-blue-700 shadow-2xs transition"
+        : "px-3 py-1 rounded-md text-slate-600 hover:text-slate-900 transition";
+      document.getElementById('dev-ipad').className = dev === 'ipad'
+        ? "px-3 py-1 rounded-md bg-white text-blue-700 shadow-2xs transition"
+        : "px-3 py-1 rounded-md text-slate-600 hover:text-slate-900 transition";
+
+      // 各入力欄リセット
+      ['a', 'b', 'single'].forEach(k => {
+        document.getElementById(`search-${k}`).value = '';
+      });
+      document.getElementById('filter-keyword').value = '';
+      document.getElementById('single-filter').value = 'any_body';
+
+      // 選択肢を全更新
+      populateSelectOptions('a', list[0] ? list[0].id : null);
+      populateSelectOptions('b', list[1] ? list[1].id : (list[0] ? list[0].id : null));
+      populateSelectOptions('single', list[0] ? list[0].id : null);
+
+      // 年・インチ逆引きフィルタを初期化して全ビューを再描画
+      initSpecFilters();
+      checkCompatibility();
+      renderSingleCompat();
     }
 
     // ============================================================
@@ -576,6 +583,8 @@
       const meta = getDeviceMeta();
 
       if (!idA || !idB) {
+        document.getElementById('meta-a').textContent = '';
+        document.getElementById('meta-b').textContent = '';
         cardsEl.innerHTML = `<div class="p-4 rounded-xl bg-slate-100 text-center text-xs text-slate-500">一致する機種がありません</div>`;
         notesEl.innerHTML = '';
         return;
@@ -643,6 +652,7 @@
       `;
 
       if (!baseId) {
+        document.getElementById('meta-single').textContent = '';
         tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-slate-400">機種が見つかりません</td></tr>`;
         summaryEl.innerHTML = '';
         return;
@@ -692,7 +702,7 @@
           <td class="py-2 px-1.5 text-center">${symbolBadge(st.filmSt)}</td>
           <td class="py-2 px-1.5 text-center">${symbolBadge(st.cableSt)}</td>
           <td class="py-2 px-2 text-right whitespace-nowrap">
-            <button onclick="jumpToCompare('${base.id}', '${model.id}')"
+            <button type="button" onclick="jumpToCompare('${base.id}', '${model.id}')"
                     class="px-2 py-1 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 font-semibold text-[11px]">
               2機種比較へ
             </button>
@@ -712,10 +722,12 @@
       const ySel = document.getElementById('filter-year');
       ySel.innerHTML = '<option value="all">すべて</option>';
       years.forEach(y => ySel.add(new Option(`${y}年`, String(y))));
+      ySel.value = 'all';
 
       const iSel = document.getElementById('filter-inch');
       iSel.innerHTML = '<option value="all">すべて</option>';
       inches.forEach(i => iSel.add(new Option(`${i} インチ`, String(i))));
+      iSel.value = 'all';
 
       renderSpecTable();
     }
@@ -754,10 +766,10 @@
           <td class="py-2 px-2 font-semibold text-blue-700 whitespace-nowrap">${m.inch}"</td>
           <td class="py-2 px-2 text-slate-600 whitespace-nowrap">${m.connector}</td>
           <td class="py-2 px-2 text-right whitespace-nowrap space-x-1">
-            <button onclick="jumpToSingle('${m.id}')" class="px-2 py-1 rounded bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-semibold text-[11px]">
+            <button type="button" onclick="jumpToSingle('${m.id}')" class="px-2 py-1 rounded bg-emerald-50 text-emerald-700 hover:bg-emerald-100 font-semibold text-[11px]">
               互換一覧
             </button>
-            <button onclick="jumpToCompare('${m.id}', '${defaultPartnerId}')" class="px-2 py-1 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 font-semibold text-[11px]">
+            <button type="button" onclick="jumpToCompare('${m.id}', '${defaultPartnerId}')" class="px-2 py-1 rounded bg-blue-50 text-blue-700 hover:bg-blue-100 font-semibold text-[11px]">
               比較へ
             </button>
           </td>
@@ -768,18 +780,15 @@
     function jumpToCompare(idA, idB) {
       document.getElementById('search-a').value = '';
       document.getElementById('search-b').value = '';
-      filterSelect('a');
-      filterSelect('b');
-      document.getElementById('model-a').value = idA;
-      if (idB) document.getElementById('model-b').value = idB;
+      populateSelectOptions('a', idA);
+      populateSelectOptions('b', idB);
       checkCompatibility();
       switchTab('checker');
     }
 
     function jumpToSingle(id) {
       document.getElementById('search-single').value = '';
-      filterSelect('single');
-      document.getElementById('model-single').value = id;
+      populateSelectOptions('single', id);
       renderSingleCompat();
       switchTab('single');
     }
@@ -792,6 +801,9 @@
           ? "py-2.5 px-2 text-blue-600 border-b-2 border-blue-600 bg-blue-50/40"
           : "py-2.5 px-2 text-slate-500 hover:text-slate-700 border-b border-slate-200";
       });
+      if (tab === 'checker') checkCompatibility();
+      if (tab === 'single') renderSingleCompat();
+      if (tab === 'spec') renderSpecTable();
     }
 
     // 初期起動
